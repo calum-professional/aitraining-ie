@@ -1,0 +1,16 @@
+# Secrets: never commit API keys or environment files
+.env
+.env.*
+
+# Local folders created by deployment tools (Netlify / Cloudflare), if used later
+.netlify/
+.wrangler/
+node_modules/
+
+# Editor and operating-system clutter
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
