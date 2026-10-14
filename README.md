@@ -68,7 +68,7 @@ A simple static website listing AI courses from Professional Training, built wit
 - The page is now one long scroll, in this order: **Home** (the intro), **Welcome**, **About**, **Testimonials**, **Courses**.
 - A menu in the header jumps to each section. It glides smoothly unless the visitor has asked their device to reduce motion.
   - On tablets and desktops the header stays at the top while you scroll ("sticky").
-  - On phones it scrolls away to save space, and the menu wraps under the logo.
+  - On phones (narrower than 640px) it scrolls away to save space, and the links are tucked behind a **Menu** button (☰). Tapping it drops the menu down. It closes when you pick a link, tap the button again, press Escape or tap outside it.
 - As you scroll, the menu link for the section on screen is highlighted in blue with a thick underline. Screen readers announce it as the current location.
 - The intro has a **View upcoming courses** button that jumps to the courses.
 - All the new text (menu labels, section headings and paragraphs, testimonials) is in `config.js` under `navigation` and `sections`. It's **dummy text for now**, marked `TODO`.

@@ -157,36 +157,91 @@ main:focus {
    4a. Header
    --------------------------------------------------------------------- */
 .site-header {
+  /* "relative" makes the header the reference point for the mobile menu,
+     which is positioned just below it (see .site-nav__list). */
+  position: relative;
+  z-index: 10;                   /* keeps the open menu above the page */
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
 }
 
-/* Logo on the left, menu on the right. flex-wrap lets the menu drop
-   onto its own line on narrow phones instead of squashing. */
+/* Logo on the left, menu on the right. */
 .site-header__inner {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   column-gap: var(--space-5);
   min-height: 4rem;
 }
 
-/* The menu: a row of links. On narrow screens it wraps onto two lines. */
+/* MOBILE MENU (phones; larger screens are in section 6).
+   The "Menu" button is shown and the list of links is hidden until the
+   button is pressed. */
+.site-nav__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.75rem;           /* ≈44px: a comfortable touch target */
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.site-nav__toggle:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* The ☰ and ✕ icons: outlines in the button's text colour. */
+.site-nav__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* Show ☰ while closed and ✕ while open, based on aria-expanded. */
+.site-nav__toggle[aria-expanded="true"] .site-nav__icon--open,
+.site-nav__toggle[aria-expanded="false"] .site-nav__icon--close {
+  display: none;
+}
+
+/* The list of links: hidden on phones until the menu is opened. When
+   open, it drops down below the header across the full width, on top of
+   the page content. */
 .site-nav__list {
+  display: none;
   list-style: none;
   margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  /* Negative margin lines the first link's text up with the logo above,
-     even though each link has padding around it. */
-  margin-inline: calc(-1 * var(--space-2));
+  padding: var(--space-2) var(--space-4) var(--space-4);
+  position: absolute;
+  top: 100%;                     /* directly below the header */
+  left: 0;
+  right: 0;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-hover);
+}
+
+.site-nav--open .site-nav__list {
+  display: block;
+}
+
+/* A thin line between the links in the dropped-down menu. */
+.site-nav__list li + li {
+  border-top: 1px solid var(--color-border);
 }
 
 .site-nav__link {
   display: block;
-  padding: var(--space-2);
+  padding: var(--space-3) var(--space-2);
   min-height: 2.75rem;           /* ≈44px: a comfortable touch target */
   line-height: 1.75rem;
   color: var(--color-text);
@@ -629,7 +684,36 @@ main:focus {
   .site-header {
     position: sticky;
     top: 0;
-    z-index: 10;
+  }
+
+  /* Larger screens: no "Menu" button. The links are always shown in a
+     row on the right of the header, undoing the mobile dropdown styles. */
+  .site-nav__toggle {
+    display: none;
+  }
+
+  /* The second selector matters: if the menu was opened on a phone and
+     the screen then gets wider (e.g. a tablet rotated to landscape), the
+     "open" rule would otherwise stack the links in a column. */
+  .site-nav__list,
+  .site-nav--open .site-nav__list {
+    display: flex;
+    position: static;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    background: none;
+    /* Negative margin lines the last link's text up with the right edge
+       of the page, even though each link has padding around it. */
+    margin-inline: calc(-1 * var(--space-2));
+  }
+
+  .site-nav__list li + li {
+    border-top: 0;
+  }
+
+  .site-nav__link {
+    padding-block: var(--space-2);
   }
 
   /* Because the header now covers the top of the window, tell the browser

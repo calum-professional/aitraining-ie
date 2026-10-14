@@ -58,6 +58,7 @@ applySiteSettings();
 renderPageSections(CONFIG.sections);
 renderNavigation(CONFIG.navigation); // after the sections, so it can skip hidden ones
 highlightCurrentSection();
+setUpMobileMenu();
 setUpRetryButton();
 loadCourses();
 
@@ -365,6 +366,66 @@ function renderNavigation(links) {
   }
 
   document.getElementById("site-nav").replaceChildren(...items);
+
+  // No links at all? Hide the whole menu, including the mobile button.
+  document.querySelector(".site-nav").hidden = items.length === 0;
+}
+
+
+/**
+ * Makes the mobile "Menu" button open and close the list of links.
+ * (On larger screens the button is hidden by CSS and the links are
+ * always visible, so none of this has any effect there.)
+ *
+ * The menu closes when the visitor:
+ *   - clicks the button again
+ *   - picks a link (so they can see the section they jumped to)
+ *   - presses Escape (focus goes back to the button, so keyboard users
+ *     aren't left stranded)
+ *   - clicks or taps anywhere outside the menu
+ */
+function setUpMobileMenu() {
+  const toggle = document.getElementById("nav-toggle");
+  const nav = toggle.closest(".site-nav");
+  const list = document.getElementById("site-nav");
+
+  const isOpen = () => toggle.getAttribute("aria-expanded") === "true";
+
+  toggle.addEventListener("click", () => {
+    setMenuOpen(toggle, nav, !isOpen());
+  });
+
+  // One listener on the whole list (rather than one per link) catches
+  // clicks on any link inside it. This is called "event delegation".
+  list.addEventListener("click", (event) => {
+    if (event.target.closest("a")) {
+      setMenuOpen(toggle, nav, false);
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && isOpen()) {
+      setMenuOpen(toggle, nav, false);
+      toggle.focus();
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    if (isOpen() && !nav.contains(event.target)) {
+      setMenuOpen(toggle, nav, false);
+    }
+  });
+}
+
+
+/**
+ * Opens or closes the mobile menu. aria-expanded tells screen readers
+ * the button's state; the "site-nav--open" class shows the list (see
+ * styles.css).
+ */
+function setMenuOpen(toggle, nav, open) {
+  toggle.setAttribute("aria-expanded", String(open));
+  nav.classList.toggle("site-nav--open", open);
 }
 
 
