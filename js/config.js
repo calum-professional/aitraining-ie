@@ -44,10 +44,17 @@ const CONFIG = {
 
     // Contact details shown in the footer. Leave a value as "" to hide that line.
     contact: {
-      email: "info@professional.ie",        
-      phoneCork: "+353 21 4319010 (Cork)",         
-      phoneDublin: "+353 1 6627700 (Dublin)",
-      phoneLimerick: "+353 61 311982 (Limerick)",
+      email: "info@professional.ie",
+
+      // A list of phone numbers, each shown on its own line, in this order.
+      // Add or remove numbers as needed; use [] to show none. Text such
+      // as "(Cork)" is shown but left out of the number that gets dialled.
+      phones: [
+        "+353 21 4319010 (Cork)",
+        "+353 1 6627700 (Dublin)",
+        "+353 61 311982 (Limerick)",
+      ],
+
       address: "Building 6500, Unit E Cork Airport Business Park Kinsale Road Cork, T12 TP8H",
     },
 

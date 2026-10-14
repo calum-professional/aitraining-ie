@@ -153,16 +153,12 @@ function renderContactDetails(contact) {
     list.append(createContactItem("Email", contact.email, "mailto:" + contact.email, "email"));
   }
 
-  if (contact.phoneCork) {
-    list.append(createPhoneItem(contact.phoneCork));
-  }
-
-  if (contact.phoneDublin) {
-    list.append(createPhoneItem(contact.phoneDublin));
-  }
-
-  if (contact.phoneLimerick) {
-    list.append(createPhoneItem(contact.phoneLimerick));
+  // One line per phone number in the list. `|| []` means a missing
+  // `phones` setting counts as an empty list instead of causing an error.
+  for (const phone of contact.phones || []) {
+    if (phone) {
+      list.append(createPhoneItem(phone));
+    }
   }
 
   if (contact.address) {
