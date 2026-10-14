@@ -57,6 +57,7 @@ const CONTACT_ICONS = {
 applySiteSettings();
 renderPageSections(CONFIG.sections);
 renderNavigation(CONFIG.navigation); // after the sections, so it can skip hidden ones
+highlightCurrentSection();
 setUpRetryButton();
 loadCourses();
 
@@ -364,6 +365,69 @@ function renderNavigation(links) {
   }
 
   document.getElementById("site-nav").replaceChildren(...items);
+}
+
+
+/**
+ * Highlights the menu link for the section currently on screen, and
+ * keeps it up to date as the visitor scrolls.
+ *
+ * How: an IntersectionObserver is a browser feature that tells us when
+ * an element enters or leaves an area of the window, without us having
+ * to check on every scroll movement. Our "area" is a thin band about a
+ * third of the way down the window: whichever section is crossing that
+ * band counts as the current one.
+ */
+function highlightCurrentSection() {
+  const links = [...document.querySelectorAll(".site-nav__link")];
+
+  // Very old browsers don't have IntersectionObserver. The menu still
+  // works there, just without the highlight.
+  if (!("IntersectionObserver" in window) || links.length === 0) {
+    return;
+  }
+
+  // Pair each section with its menu link. link.hash is e.g. "#about",
+  // so .slice(1) gives the section's id, "about".
+  const linkForSection = new Map();
+  for (const link of links) {
+    linkForSection.set(document.getElementById(link.hash.slice(1)), link);
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          setCurrentLink(links, linkForSection.get(entry.target));
+        }
+      }
+    },
+    {
+      // rootMargin shrinks the watched area: 30% off the top and 69% off
+      // the bottom leaves a band 1% tall, 30% of the way down the window.
+      rootMargin: "-30% 0px -69% 0px",
+    }
+  );
+
+  for (const section of linkForSection.keys()) {
+    observer.observe(section);
+  }
+}
+
+
+/**
+ * Marks one menu link as current and un-marks the others.
+ * aria-current="location" tells screen readers "this link is where you
+ * are now"; styles.css uses the same attribute for the highlight.
+ */
+function setCurrentLink(links, currentLink) {
+  for (const link of links) {
+    if (link === currentLink) {
+      link.setAttribute("aria-current", "location");
+    } else {
+      link.removeAttribute("aria-current");
+    }
+  }
 }
 
 

@@ -201,6 +201,16 @@ main:focus {
   text-underline-offset: 0.3em;
 }
 
+/* The link for the section currently on screen (app.js sets
+   aria-current on it while you scroll). A thick underline as well as the
+   colour, so it's clear even to people who can't tell the colours apart. */
+.site-nav__link[aria-current] {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.3em;
+}
+
 .logo {
   display: inline-flex;
   align-items: center;
