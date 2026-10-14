@@ -1,3 +1,73 @@
+/* =====================================================================
+   styles.css
+   =====================================================================
+
+   How this file is organised:
+     1. Design tokens (CSS custom properties / "variables")
+     2. Base styles (reset, typography)
+     3. Layout helpers
+     4. Header, intro, courses, cards, footer
+     5. Accessibility helpers
+     6. Larger screens (media queries)
+
+   "Mobile-first": the default styles are for small phones. Media
+   queries at the bottom ADD changes for wider screens.
+
+   COLOURS: the --color-* values below are fallbacks only. app.js
+   replaces them with the values in CONFIG.colours (config.js), so
+   change colours THERE, not here.
+   ===================================================================== */
+
+
+/* ---------------------------------------------------------------------
+   1. Design tokens
+   A token is a named value reused throughout the stylesheet. Change it
+   once here and everything that uses it updates.
+   --------------------------------------------------------------------- */
+:root {
+  /* Colours (overridden from config.js) */
+  --color-primary: #0b5394;
+  --color-primary-hover: #083d6e;
+  --color-on-primary: #ffffff;
+  --color-text: #1f2933;
+  --color-text-muted: #52606d;
+  --color-background: #f7f8fa;
+  --color-surface: #ffffff;
+  --color-border: #dde2e8;
+
+  /* Spacing scale: use these instead of random pixel values so the
+     spacing feels consistent. 1rem = the browser's base font size
+     (usually 16px). */
+  --space-1: 0.25rem;  /*  4px */
+  --space-2: 0.5rem;   /*  8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.5rem;   /* 24px */
+  --space-6: 2rem;     /* 32px */
+  --space-7: 3rem;     /* 48px */
+  --space-8: 4rem;     /* 64px */
+
+  /* Typography: a "system font stack" uses fonts already on the
+     visitor's device, so nothing has to download. */
+  --font-family: system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-size-small: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-large: 1.125rem;
+  --line-height: 1.6;
+
+  /* Shapes and widths */
+  --radius: 8px;
+  --max-width: 72rem;          /* about 1150px: the widest the content gets */
+  --shadow-hover: 0 4px 16px rgba(15, 23, 42, 0.08);
+}
+
+
+/* ---------------------------------------------------------------------
+   2. Base styles
+   --------------------------------------------------------------------- */
+
+/* Make width/height include padding and border: much easier to reason about. */
 *,
 *::before,
 *::after {
@@ -6,61 +76,353 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.5;
-  color: #1a1a1a;
-  background: #f7f7f8;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height);
+  color: var(--color-text);
+  background-color: var(--color-background);
+  /* Stops some phones enlarging text when turned sideways. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
-.site-header,
-.site-footer {
-  padding: 1rem 1.5rem;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e5e5;
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+  margin-top: 0;
 }
 
+p {
+  margin-top: 0;
+}
+
+a {
+  color: var(--color-primary);
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* A clear, consistent focus ring for keyboard users. :focus-visible
+   shows it when navigating by keyboard but not on mouse clicks. */
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* <main> receives focus from the skip link; it doesn't need a ring. */
+main:focus {
+  outline: none;
+}
+
+
+/* ---------------------------------------------------------------------
+   3. Layout helpers
+   --------------------------------------------------------------------- */
+
+/* Centres content and limits its width so lines don't get too long. */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;            /* left + right auto = centred */
+  padding-inline: var(--space-4); /* breathing room on small screens */
+}
+
+
+/* ---------------------------------------------------------------------
+   4a. Header
+   --------------------------------------------------------------------- */
 .site-header {
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.site-header__inner {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  min-height: 4rem;
 }
 
 .logo {
-  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--color-primary);
 }
 
-.site-footer {
-  border-top: 1px solid #e5e5e5;
-  border-bottom: none;
-  text-align: center;
-  font-size: 0.875rem;
+.logo__text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
-main {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
+/* Used only when an image logo is set in config.js. */
+.logo__image {
+  display: block;
+  height: 2.5rem;
+  width: auto;
 }
 
-.course-grid {
+
+/* ---------------------------------------------------------------------
+   4b. Intro ("hero") section
+   --------------------------------------------------------------------- */
+.hero {
+  padding-block: var(--space-7) var(--space-6);
+}
+
+.hero__title {
+  /* clamp(min, preferred, max): text grows with screen width but never
+     goes below the minimum or above the maximum. */
+  font-size: clamp(1.75rem, 1.2rem + 2.5vw, 2.75rem);
+  max-width: 22ch;               /* "ch" ≈ width of one character */
+  margin-bottom: var(--space-4);
+}
+
+.hero__intro {
+  font-size: var(--font-size-large);
+  color: var(--color-text-muted);
+  max-width: 60ch;
+  margin-bottom: 0;
+}
+
+
+/* ---------------------------------------------------------------------
+   4c. Courses section and cards
+   --------------------------------------------------------------------- */
+.courses {
+  padding-block: var(--space-5) var(--space-8);
+}
+
+.section-title {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-5);
+}
+
+/* The list of cards: a single column on phones (widened below). */
+.course-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+
+/* Each card stretches to the full height of its grid row, so cards in
+   the same row line up even if their text lengths differ. */
+.course-list > li {
+  display: flex;
 }
 
 .course-card {
-  background: #ffffff;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
-  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: var(--space-5);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  transition: box-shadow 150ms ease, border-color 150ms ease;
 }
 
-.course-card h2 {
-  margin-top: 0;
-  font-size: 1.15rem;
+/* Subtle hover: a soft shadow and slightly stronger border. */
+.course-card:hover {
+  box-shadow: var(--shadow-hover);
+  border-color: var(--color-text-muted);
 }
 
-.status {
-  grid-column: 1 / -1;
-  color: #666;
+.course-card__title {
+  font-size: 1.2rem;
+  margin-bottom: var(--space-4);
+}
+
+/* Date / Duration / Location: label on the left, value on the right. */
+.course-card__details {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-small);
+}
+
+.course-card__details > div {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: var(--space-2);
+  padding-block: var(--space-1);
+}
+
+.course-card__details dt {
+  color: var(--color-text-muted);
+}
+
+.course-card__details dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.course-card__description {
+  color: var(--color-text);
+  margin-bottom: var(--space-5);
+}
+
+/* Price and button: "margin-top: auto" pushes the footer to the bottom
+   of the card, so buttons line up across a row. */
+.course-card__footer {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.course-card__price {
+  margin: 0;
+  font-size: var(--font-size-large);
+  font-weight: 700;
+}
+
+/* Button style, used on links that act as calls to action. */
+.button {
+  display: inline-block;
+  padding: var(--space-2) var(--space-4);
+  min-height: 2.75rem;           /* ≈44px: a comfortable touch target */
+  line-height: 1.75rem;
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.button:hover {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  color: var(--color-on-primary);
+}
+
+
+/* ---------------------------------------------------------------------
+   4d. Footer
+   --------------------------------------------------------------------- */
+.site-footer {
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  padding-block: var(--space-6);
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+.site-footer__inner {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.site-footer__heading {
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+}
+
+.contact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.contact-list li {
+  padding-block: var(--space-1);
+}
+
+.site-footer__copyright {
+  margin: 0;
+}
+
+
+/* ---------------------------------------------------------------------
+   5. Accessibility helpers
+   --------------------------------------------------------------------- */
+
+/* Hides text visually but keeps it available to screen readers.
+   Used to make each "Book / Enquire" link unique, e.g.
+   "Book / Enquire: AI Fundamentals for Business". */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* The skip link sits off-screen until it receives keyboard focus. */
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: -10rem;
+  z-index: 100;
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  border-radius: var(--radius);
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  top: var(--space-4);
+  color: var(--color-on-primary);
+}
+
+/* Respect visitors who ask their device to reduce motion. */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+
+/* ---------------------------------------------------------------------
+   6. Larger screens
+   --------------------------------------------------------------------- */
+
+/* Tablets (from 640px wide): two cards per row, more side padding. */
+@media (min-width: 40em) {
+  .container {
+    padding-inline: var(--space-6);
+  }
+
+  .course-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .site-footer__inner {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+  }
+}
+
+/* Desktops (from 1024px wide): three cards per row, roomier intro. */
+@media (min-width: 64em) {
+  .hero {
+    padding-block: var(--space-8) var(--space-6);
+  }
+
+  .course-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
