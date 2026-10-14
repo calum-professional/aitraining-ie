@@ -8,8 +8,10 @@
 
    What it does, in order:
      1. Applies the site settings (colours, text, logo, contact details).
-     2. Loads the courses (mock file or live API, see CONFIG.useMockData).
-     3. Builds a card for each course, or shows a loading, empty or
+     2. Fills in the page sections (welcome, about, testimonials) and
+        builds the navigation links in the header.
+     3. Loads the courses (mock file or live API, see CONFIG.useMockData).
+     4. Builds a card for each course, or shows a loading, empty or
         error message.
 
    SECURITY NOTE: all text is inserted with `textContent`, which
@@ -53,6 +55,8 @@ const CONTACT_ICONS = {
    exists by the time this runs.
    --------------------------------------------------------------------- */
 applySiteSettings();
+renderPageSections(CONFIG.sections);
+renderNavigation(CONFIG.navigation); // after the sections, so it can skip hidden ones
 setUpRetryButton();
 loadCourses();
 
@@ -77,6 +81,7 @@ function applySiteSettings() {
   setText("site-name", site.name);
   setText("tagline", site.tagline);
   setText("intro", site.intro);
+  setText("hero-button", site.heroButtonLabel);
   setText("owner", site.owner);
 
   applyLogo(site.logo);
@@ -237,6 +242,128 @@ function createIcon(name) {
   }
 
   return svg;
+}
+
+
+/* =====================================================================
+   PAGE SECTIONS AND NAVIGATION
+   ===================================================================== */
+
+/**
+ * Fills in the welcome, about and testimonials sections from
+ * CONFIG.sections.
+ */
+function renderPageSections(sections) {
+  renderTextSection("welcome", sections.welcome);
+  renderTextSection("about", sections.about);
+  renderTestimonials(sections.testimonials);
+}
+
+
+/**
+ * Fills a simple text section: its heading, then one <p> per item in
+ * `content.paragraphs`. If there is no content, the whole section is
+ * hidden instead of leaving an empty gap.
+ */
+function renderTextSection(sectionId, content) {
+  const section = document.getElementById(sectionId);
+  const paragraphs = (content && content.paragraphs) || [];
+
+  if (!content || (!content.heading && paragraphs.length === 0)) {
+    section.hidden = true;
+    return;
+  }
+
+  section.querySelector(".section-title").textContent = content.heading;
+
+  const body = section.querySelector(".section-body");
+  body.replaceChildren(...paragraphs.map((text) => createElementWithText("p", "", text)));
+}
+
+
+/**
+ * Builds one card per testimonial, or hides the section if there are none.
+ */
+function renderTestimonials(content) {
+  const section = document.getElementById("testimonials");
+  const items = (content && content.items) || [];
+
+  if (items.length === 0) {
+    section.hidden = true;
+    return;
+  }
+
+  section.querySelector(".section-title").textContent = content.heading;
+
+  const list = document.getElementById("testimonial-list");
+  list.replaceChildren(...items.map((testimonial) => {
+    const item = document.createElement("li");
+    item.append(createTestimonial(testimonial));
+    return item;
+  }));
+}
+
+
+/**
+ * Builds one testimonial:
+ *   <figure class="testimonial">
+ *     <blockquote><p>The quote</p></blockquote>
+ *     <figcaption>Name <span>Role</span></figcaption>
+ *   </figure>
+ */
+function createTestimonial(testimonial) {
+  const figure = document.createElement("figure");
+  figure.className = "testimonial";
+
+  const quote = document.createElement("blockquote");
+  quote.className = "testimonial__quote";
+  quote.append(createElementWithText("p", "", testimonial.quote));
+
+  const caption = document.createElement("figcaption");
+  caption.className = "testimonial__credit";
+  caption.append(createElementWithText("span", "testimonial__name", testimonial.name));
+
+  if (testimonial.role) {
+    caption.append(createElementWithText("span", "testimonial__role", testimonial.role));
+  }
+
+  figure.append(quote, caption);
+  return figure;
+}
+
+
+/**
+ * Builds the header links from CONFIG.navigation. Each link points at a
+ * section's id, e.g. href="#about"; clicking it scrolls to that section.
+ * Links to sections that don't exist or are hidden are left out.
+ */
+function renderNavigation(links) {
+  const items = [];
+
+  for (const link of links) {
+    const target = document.getElementById(link.target);
+
+    if (!target) {
+      // Most likely a typo in config.js. Tell the maintainer in the console.
+      console.warn(`Navigation: no section with id "${link.target}", so the "${link.label}" link was left out.`);
+      continue;
+    }
+
+    if (target.hidden) {
+      continue; // the section has no content, so don't link to it
+    }
+
+    const anchor = document.createElement("a");
+    anchor.className = "site-nav__link";
+    anchor.href = "#" + link.target;
+    anchor.textContent = link.label;
+
+    const item = document.createElement("li");
+    item.append(anchor);
+    items.push(item);
+  }
+
+  document.getElementById("site-nav").replaceChildren(...items);
 }
 
 

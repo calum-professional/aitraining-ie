@@ -6,7 +6,8 @@
      1. Design tokens (CSS custom properties / "variables")
      2. Base styles (reset, typography)
      3. Layout helpers
-     4. Header, intro, courses, cards, footer
+     4. Header and menu, intro, page sections, testimonials, course
+        cards, footer
      5. Accessibility helpers
      6. Larger screens (media queries)
 
@@ -73,6 +74,14 @@
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+/* Clicking a menu link glides down to the section instead of jumping.
+   Only for visitors who haven't asked their device to reduce motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -152,10 +161,44 @@ main:focus {
   border-bottom: 1px solid var(--color-border);
 }
 
+/* Logo on the left, menu on the right. flex-wrap lets the menu drop
+   onto its own line on narrow phones instead of squashing. */
 .site-header__inner {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
+  column-gap: var(--space-5);
   min-height: 4rem;
+}
+
+/* The menu: a row of links. On narrow screens it wraps onto two lines. */
+.site-nav__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  /* Negative margin lines the first link's text up with the logo above,
+     even though each link has padding around it. */
+  margin-inline: calc(-1 * var(--space-2));
+}
+
+.site-nav__link {
+  display: block;
+  padding: var(--space-2);
+  min-height: 2.75rem;           /* ≈44px: a comfortable touch target */
+  line-height: 1.75rem;
+  color: var(--color-text);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius);
+}
+
+.site-nav__link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
 }
 
 .logo {
@@ -201,18 +244,102 @@ main:focus {
   margin-bottom: 0;
 }
 
+.hero__button {
+  margin-top: var(--space-5);
+}
+
 
 /* ---------------------------------------------------------------------
-   4c. Courses section and cards
+   4c. Page sections (welcome, about, testimonials, courses)
    --------------------------------------------------------------------- */
-.courses {
-  padding-block: var(--space-5) var(--space-8);
+.section {
+  padding-block: var(--space-7);
+}
+
+/* Every other section gets a white background and thin borders, so
+   it's easy to see where one section ends and the next begins. */
+.section--alt {
+  background-color: var(--color-surface);
+  border-block: 1px solid var(--color-border);
 }
 
 .section-title {
   font-size: 1.5rem;
   margin-bottom: var(--space-5);
 }
+
+/* Paragraphs of text: kept narrow, because very long lines are tiring
+   to read. */
+.section-body {
+  max-width: 65ch;
+}
+
+.section-body p:last-child {
+  margin-bottom: 0;
+}
+
+
+/* ---------------------------------------------------------------------
+   4d. Testimonials
+   --------------------------------------------------------------------- */
+
+/* Same grid as the course cards: one column on phones (widened below). */
+.testimonial-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+
+.testimonial-list > li {
+  display: flex;
+}
+
+/* The page background colour, so the cards stand out on the white section. */
+.testimonial {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0;
+  padding: var(--space-5);
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius);
+}
+
+.testimonial__quote {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-large);
+}
+
+.testimonial__quote p {
+  margin: 0;
+}
+
+/* margin-top: auto pushes the name to the bottom of the card, so names
+   line up across a row even when quotes are different lengths. */
+.testimonial__credit {
+  margin-top: auto;
+  font-size: var(--font-size-small);
+}
+
+.testimonial__name {
+  display: block;
+  font-weight: 700;
+}
+
+.testimonial__role {
+  display: block;
+  color: var(--color-text-muted);
+}
+
+
+/* ---------------------------------------------------------------------
+   4e. Course cards
+   --------------------------------------------------------------------- */
 
 /* The list of cards: a single column on phones (widened below). */
 .course-list {
@@ -370,7 +497,7 @@ main:focus {
 
 
 /* ---------------------------------------------------------------------
-   4d. Footer
+   4f. Footer
    --------------------------------------------------------------------- */
 .site-footer {
   background-color: var(--color-surface);
@@ -485,6 +612,23 @@ main:focus {
     padding-inline: var(--space-6);
   }
 
+  /* "Sticky" header: it stays at the top of the window while the page
+     scrolls, so the menu is always in reach. (Not on phones, where it
+     would take up too much of the small screen.) z-index keeps it above
+     the cards as they scroll underneath. */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  /* Because the header now covers the top of the window, tell the browser
+     to stop a little lower when jumping to a section, so the section's
+     heading isn't hidden behind the header. */
+  html {
+    scroll-padding-top: 5rem;
+  }
+
   .course-list {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -495,13 +639,19 @@ main:focus {
   }
 }
 
-/* Desktops (from 1024px wide): three cards per row, roomier intro. */
+/* Desktops (from 1024px wide): three cards and testimonials per row,
+   roomier intro and sections. */
 @media (min-width: 64em) {
   .hero {
-    padding-block: var(--space-8) var(--space-6);
+    padding-block: var(--space-8) var(--space-7);
   }
 
-  .course-list {
+  .section {
+    padding-block: var(--space-8);
+  }
+
+  .course-list,
+  .testimonial-list {
     grid-template-columns: repeat(3, 1fr);
   }
 }

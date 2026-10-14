@@ -29,6 +29,10 @@ const CONFIG = {
     // Optional longer intro paragraph under the tagline. Use "" to hide it.
     intro: "Browse upcoming courses from Professional Training, from AI fundamentals to hands-on tools you can use at work straight away.", // TODO: confirm wording
 
+    // Text on the button under the intro, which jumps down to the courses.
+    // Use "" to hide the button.
+    heroButtonLabel: "View upcoming courses",
+
     // Short description used by search engines and link previews (Phase 5).
     // Aim for about 150 characters.
     metaDescription: "Upcoming AI training courses in Ireland from Professional Training. Dates, prices and booking.",
@@ -63,7 +67,72 @@ const CONFIG = {
   },
 
   /* -------------------------------------------------------------------
-     2. COLOURS
+     2. NAVIGATION AND PAGE SECTIONS
+     The site is one long page. The links in the header jump to its
+     sections, in the order listed here.
+     ------------------------------------------------------------------- */
+
+  // Each link has:
+  //   label  : the text shown in the header
+  //   target : the id of the section it jumps to. The sections on the
+  //            page are: "top" (the intro at the top), "welcome", "about",
+  //            "testimonials" and "courses".
+  // Remove an entry to remove the link. Links to a hidden section (see
+  // below) are left out automatically.
+  navigation: [
+    { label: "Home", target: "top" },
+    { label: "Welcome", target: "welcome" },
+    { label: "About", target: "about" },
+    { label: "Testimonials", target: "testimonials" },
+    { label: "Courses", target: "courses" },
+  ],
+
+  // The text of each section. `paragraphs` is a list: each item becomes
+  // its own paragraph. To hide a whole section, set its heading to "" and
+  // its list to []. The text is shown as plain text (no HTML).
+  sections: {
+    welcome: {
+      heading: "Welcome",
+      paragraphs: [ // TODO: real text (this is dummy text)
+        "Welcome to aitraining.ie. This is placeholder text for the welcome section. It will introduce the site and explain who the courses are for.",
+        "A second short paragraph can say what visitors will find on this page and how to get in touch.",
+      ],
+    },
+
+    about: {
+      heading: "About us",
+      paragraphs: [ // TODO: real text (this is dummy text)
+        "This is placeholder text for the about section. It will describe Professional Training: who we are, how long we have been running courses, and what makes our training different.",
+        "A second paragraph can cover how the courses are delivered, such as online, in person or on-site for teams, and who the trainers are.",
+      ],
+    },
+
+    testimonials: {
+      heading: "What our learners say",
+      // Each testimonial has a quote, the person's name and their role.
+      // Use "" for a role to leave it out.
+      items: [ // TODO: real testimonials, with permission (these are dummy text)
+        {
+          quote: "Placeholder testimonial. A short quote from a learner about what they got out of the course will go here.",
+          name: "Learner name",
+          role: "Job title, Company",
+        },
+        {
+          quote: "Placeholder testimonial. A second quote, ideally about a practical result, such as time saved or a new skill used at work.",
+          name: "Learner name",
+          role: "Job title, Company",
+        },
+        {
+          quote: "Placeholder testimonial. A third quote, for example from a manager who sent their team on a course.",
+          name: "Learner name",
+          role: "Job title, Company",
+        },
+      ],
+    },
+  },
+
+  /* -------------------------------------------------------------------
+     3. COLOURS
      app.js copies these into CSS custom properties (e.g. --color-primary),
      and styles.css uses those variables everywhere. Changing a colour
      here re-themes the whole site.
@@ -86,7 +155,7 @@ const CONFIG = {
   },
 
   /* -------------------------------------------------------------------
-     3. DATA SOURCE: mock data or live API
+     4. DATA SOURCE: mock data or live API
      ------------------------------------------------------------------- */
 
   // true  = load courses from the local file below (for development/design)
@@ -133,7 +202,7 @@ const CONFIG = {
   },
 
   /* -------------------------------------------------------------------
-     4. FIELD MAP
+     5. FIELD MAP
      Links the API's field names (right) to what the page shows (left).
      If the API renames a field, change it here and nowhere else.
 
@@ -153,7 +222,7 @@ const CONFIG = {
   },
 
   /* -------------------------------------------------------------------
-     5. BOOKING / ENQUIRE BUTTONS
+     6. BOOKING / ENQUIRE BUTTONS
      ------------------------------------------------------------------- */
   booking: {
     // Text on each card's button.
@@ -166,7 +235,7 @@ const CONFIG = {
   },
 
   /* -------------------------------------------------------------------
-     6. FORMATTING
+     7. FORMATTING
      How dates and prices are displayed. "en-IE" gives Irish formats,
      e.g. "Thu 5 Nov 2026", "€495" and "€299.50".
      ------------------------------------------------------------------- */

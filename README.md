@@ -4,7 +4,7 @@ A simple static website listing AI courses from Professional Training, built wit
 
 ## In brief
 
-- **What it is:** one web page that shows upcoming AI courses as cards, each with a date, duration, location, price and a "Book / Enquire" button.
+- **What it is:** one scrolling web page with five sections (Home, Welcome, About, Testimonials and Courses) and a menu at the top that jumps to each one. The courses show as cards, each with a date, duration, location, price and a "Book / Enquire" button.
 - **How it's built:** plain HTML, CSS and JavaScript. There are no frameworks, no installs and no build step.
 - **Where the settings live:** everything specific to this site (text, contact details, colours, data source) is in **`js/config.js`**. To make a new site, copy the project and edit that one file.
 - **Where it's up to:** Phases 1–3 of 6 are done and the favicon from Phase 5 is in place. The page works with **sample data**. Connecting the real Professional Training API (Phase 4) is waiting on the API details.
@@ -63,6 +63,16 @@ A simple static website listing AI courses from Professional Training, built wit
 - Linked them in the `<head>` of `index.html`.
 - **To change the icon:** replace those three files with your own, keeping the same names. If you change `colours.primary` in `config.js`, the icon won't change with it, because it's a separate image.
 
+### Single-page layout with navigation
+
+- The page is now one long scroll, in this order: **Home** (the intro), **Welcome**, **About**, **Testimonials**, **Courses**.
+- A menu in the header jumps to each section. It glides smoothly unless the visitor has asked their device to reduce motion.
+  - On tablets and desktops the header stays at the top while you scroll ("sticky").
+  - On phones it scrolls away to save space, and the menu wraps under the logo.
+- The intro has a **View upcoming courses** button that jumps to the courses.
+- All the new text (menu labels, section headings and paragraphs, testimonials) is in `config.js` under `navigation` and `sections`. It's **dummy text for now**, marked `TODO`.
+- To hide a section, empty its text in `config.js`. Its menu link disappears automatically.
+
 ---
 
 ## Project files
@@ -82,6 +92,8 @@ A simple static website listing AI courses from Professional Training, built wit
 | Setting | What it controls |
 |---|---|
 | `site` | Site name, tagline, intro, logo, contact details (email, a list of phone numbers, address), owner. |
+| `navigation` | The menu links: their labels, order, and which section each one jumps to. |
+| `sections` | The text of the Welcome and About sections, and the testimonials. |
 | `colours` | Every colour on the site. Check contrast if you change them. |
 | `useMockData` | `true` = sample file, `false` = live API. |
 | `api` | API address, where the course list sits in the response, the login key type, and the timeout. |
@@ -89,7 +101,7 @@ A simple static website listing AI courses from Professional Training, built wit
 | `booking` | Button text, and the fallback link for courses without their own booking link. |
 | `format` | Locale and currency (`en-IE`, `EUR`). |
 
-Values marked `TODO` in `config.js` are still placeholders: the tagline and intro wording, the API address and the fallback booking link.
+Values marked `TODO` in `config.js` are still placeholders: the Welcome, About and Testimonials text, the tagline and intro wording, the API address and the fallback booking link.
 
 ## Checking the page states
 

@@ -41,6 +41,13 @@
       <a class="logo" href="#top" id="logo-link">
         <span class="logo__text" data-config="site-name">aitraining.ie</span>
       </a>
+
+      <!-- Main navigation. app.js fills this list with links from
+           CONFIG.navigation. aria-label names it for screen readers,
+           which list it as "Main navigation". -->
+      <nav class="site-nav" aria-label="Main">
+        <ul class="site-nav__list" id="site-nav"></ul>
+      </nav>
     </div>
   </header>
 
@@ -58,11 +65,45 @@
           Browse upcoming courses from Professional Training, from AI
           fundamentals to hands-on tools you can use at work straight away.
         </p>
+        <a class="button hero__button" href="#courses" data-config="hero-button">
+          View upcoming courses
+        </a>
+      </div>
+    </section>
+
+    <!-- =========================== WELCOME =========================== -->
+    <!-- The heading and paragraphs come from CONFIG.sections.welcome.
+         "section--alt" gives alternate sections a white background, so
+         each section is easy to tell apart while scrolling. -->
+    <section class="section section--alt" aria-labelledby="welcome-heading" id="welcome">
+      <div class="container">
+        <h2 id="welcome-heading" class="section-title">Welcome</h2>
+        <div class="section-body"></div>
+      </div>
+    </section>
+
+    <!-- ============================ ABOUT ============================ -->
+    <!-- Filled from CONFIG.sections.about. -->
+    <section class="section" aria-labelledby="about-heading" id="about">
+      <div class="container">
+        <h2 id="about-heading" class="section-title">About us</h2>
+        <div class="section-body"></div>
+      </div>
+    </section>
+
+    <!-- ========================= TESTIMONIALS ========================= -->
+    <!-- Filled from CONFIG.sections.testimonials. Each testimonial is a
+         <figure> holding a <blockquote> (the quote) and a <figcaption>
+         (who said it), which is the standard HTML way to credit a quote. -->
+    <section class="section section--alt" aria-labelledby="testimonials-heading" id="testimonials">
+      <div class="container">
+        <h2 id="testimonials-heading" class="section-title">What our learners say</h2>
+        <ul class="testimonial-list" id="testimonial-list"></ul>
       </div>
     </section>
 
     <!-- =========================== COURSES =========================== -->
-    <section class="courses" aria-labelledby="courses-heading" id="courses">
+    <section class="section" aria-labelledby="courses-heading" id="courses">
       <div class="container">
         <!-- tabindex="-1" lets app.js move focus here after "Try again"
              succeeds, so keyboard users are not left on a hidden button. -->
