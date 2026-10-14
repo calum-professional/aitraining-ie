@@ -25,6 +25,27 @@
 // the line that creates it has run.
 const SAFE_URL_PROTOCOLS = ["http:", "https:", "mailto:"];
 
+// The shapes of the footer contact icons, as SVG path data on a 24×24
+// grid. Each icon is a list of one or more paths. (Also declared before
+// start-up, because the footer is built straight away.)
+// Icon shapes: Feather Icons "mail", "phone" and "map-pin", MIT licence.
+const CONTACT_ICONS = {
+  email: [
+    "M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z",
+    "M22 6l-10 7L2 6",
+  ],
+  phone: [
+    "M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 " +
+    "19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 " +
+    ".7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 " +
+    "12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z",
+  ],
+  address: [
+    "M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z",
+    "M15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0z", // the circle inside the pin
+  ],
+};
+
 
 /* ---------------------------------------------------------------------
    Start-up
@@ -129,17 +150,23 @@ function renderContactDetails(contact) {
   list.replaceChildren(); // start empty
 
   if (contact.email) {
-    list.append(createContactItem("Email", contact.email, "mailto:" + contact.email));
+    list.append(createContactItem("Email", contact.email, "mailto:" + contact.email, "email"));
   }
 
-  if (contact.phone) {
-    // A tel: link must not contain spaces, so strip them out.
-    const dialable = contact.phone.replace(/[^\d+]/g, "");
-    list.append(createContactItem("Phone", contact.phone, "tel:" + dialable));
+  if (contact.phoneCork) {
+    list.append(createPhoneItem(contact.phoneCork));
+  }
+
+  if (contact.phoneDublin) {
+    list.append(createPhoneItem(contact.phoneDublin));
+  }
+
+  if (contact.phoneLimerick) {
+    list.append(createPhoneItem(contact.phoneLimerick));
   }
 
   if (contact.address) {
-    list.append(createContactItem("Address", contact.address));
+    list.append(createContactItem("Address", contact.address, "", "address"));
   }
 }
 
@@ -147,13 +174,22 @@ function renderContactDetails(contact) {
 /**
  * Creates one <li> for the contact list, e.g. "Email: info@example.ie".
  * If `href` is given, the value becomes a link.
+ * If `iconName` is given (a key of CONTACT_ICONS), an icon is shown
+ * instead of the label. The label is still there for screen readers.
  */
-function createContactItem(label, value, href) {
+function createContactItem(label, value, href, iconName) {
   const item = document.createElement("li");
 
   const labelSpan = document.createElement("span");
   labelSpan.textContent = label + ": ";
   item.append(labelSpan);
+
+  if (iconName) {
+    // Hide the label visually, but keep it for screen readers so they
+    // still announce e.g. "Phone: +353 ...". Then put the icon in front.
+    labelSpan.className = "visually-hidden";
+    item.prepend(createIcon(iconName));
+  }
 
   if (href) {
     const link = document.createElement("a");
@@ -161,10 +197,50 @@ function createContactItem(label, value, href) {
     link.textContent = value;
     item.append(link);
   } else {
-    item.append(value); // append() with a string adds plain text safely
+    // Wrapped in a <span> so long text (like the address) wraps neatly
+    // beside the icon instead of underneath it.
+    const text = document.createElement("span");
+    text.textContent = value;
+    item.append(text);
   }
 
   return item;
+}
+
+
+/**
+ * Creates a contact list item for a phone number, with a phone icon.
+ */
+function createPhoneItem(phone) {
+  // A tel: link may only contain digits and "+", so strip out spaces and
+  // any text such as "(Cork)". The visible number keeps them.
+  const dialable = phone.replace(/[^\d+]/g, "");
+  return createContactItem("Phone", phone, "tel:" + dialable, "phone");
+}
+
+
+
+/**
+ * Builds a small icon as an inline SVG. SVG elements must be created
+ * with createElementNS and the SVG "namespace", otherwise the browser
+ * treats them as unknown HTML tags and draws nothing.
+ */
+function createIcon(name) {
+  const svgNamespace = "http://www.w3.org/2000/svg";
+
+  const svg = document.createElementNS(svgNamespace, "svg");
+  svg.setAttribute("class", "contact-icon");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("aria-hidden", "true"); // decorative: the hidden label describes it
+  svg.setAttribute("focusable", "false");  // stops older browsers tabbing to it
+
+  for (const pathData of CONTACT_ICONS[name]) {
+    const path = document.createElementNS(svgNamespace, "path");
+    path.setAttribute("d", pathData);
+    svg.append(path);
+  }
+
+  return svg;
 }
 
 

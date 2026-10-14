@@ -397,8 +397,29 @@ main:focus {
   padding: 0;
 }
 
+/* Flexbox puts the icon and text side by side, so if long text (like the
+   address) wraps onto a second line, it stays lined up beside the icon. */
 .contact-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
   padding-block: var(--space-1);
+}
+
+/* Icons in the contact list (email, phone, address). They are drawn as
+   outlines using `currentColor`, so they match the surrounding text colour. */
+.contact-icon {
+  flex-shrink: 0;                  /* never squash the icon */
+  width: 1em;
+  height: 1em;
+  /* The line is 1.6em tall (--line-height) and the icon 1em, so 0.3em
+     of space above centres the icon on the first line of text. */
+  margin-top: 0.3em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .site-footer__copyright {

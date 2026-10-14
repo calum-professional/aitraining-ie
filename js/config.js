@@ -44,9 +44,11 @@ const CONFIG = {
 
     // Contact details shown in the footer. Leave a value as "" to hide that line.
     contact: {
-      email: "info@example.ie",         // TODO: real email
-      phone: "+353 1 000 0000",         // TODO: real phone number
-      address: "Dublin, Ireland",       // TODO: real address
+      email: "info@professional.ie",        
+      phoneCork: "+353 21 4319010 (Cork)",         
+      phoneDublin: "+353 1 6627700 (Dublin)",
+      phoneLimerick: "+353 61 311982 (Limerick)",
+      address: "Building 6500, Unit E Cork Airport Business Park Kinsale Road Cork, T12 TP8H",
     },
 
     // The organisation that runs the courses. Shown in the footer copyright.
