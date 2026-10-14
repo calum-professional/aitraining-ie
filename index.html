@@ -50,109 +50,40 @@
     <!-- =========================== COURSES =========================== -->
     <section class="courses" aria-labelledby="courses-heading" id="courses">
       <div class="container">
-        <h2 id="courses-heading" class="section-title">Upcoming courses</h2>
+        <!-- tabindex="-1" lets app.js move focus here after "Try again"
+             succeeds, so keyboard users are not left on a hidden button. -->
+        <h2 id="courses-heading" class="section-title" tabindex="-1">Upcoming courses</h2>
 
-        <!-- PHASE 2 PLACEHOLDERS: three hard-coded cards so the design can
-             be approved. In Phase 3 these are removed and app.js builds the
-             cards from data instead, using exactly this HTML structure. -->
-        <ul class="course-list" id="course-list">
+        <!-- STATUS MESSAGES: app.js shows exactly one of these at a time
+             (or none, once the courses have loaded). They are written here,
+             not in app.js, so the wording is easy to find and change.
 
-          <li>
-            <article class="course-card">
-              <h3 class="course-card__title">AI Fundamentals for Business</h3>
+             role="status" + aria-live="polite" asks screen readers to read
+             out changes inside this box when the user is not busy, so a
+             blind visitor hears "Loading courses" and the empty message
+             without needing to look for them. -->
+        <div class="course-status" role="status" aria-live="polite">
+          <p class="course-status__loading" id="courses-loading" hidden>
+            Loading courses&hellip;
+          </p>
+          <p class="course-status__empty" id="courses-empty" hidden>
+            There are no upcoming courses listed right now. Please check back
+            soon, or contact us below and we'll let you know about new dates.
+          </p>
+        </div>
 
-              <!-- A description list (<dl>) pairs each label with its value,
-                   which screen readers announce clearly. -->
-              <dl class="course-card__details">
-                <div>
-                  <dt>Date</dt>
-                  <dd><time datetime="2026-11-05">Thu 5 Nov 2026</time></dd>
-                </div>
-                <div>
-                  <dt>Duration</dt>
-                  <dd>1 day</dd>
-                </div>
-                <div>
-                  <dt>Location</dt>
-                  <dd>Online</dd>
-                </div>
-              </dl>
+        <!-- role="alert" makes screen readers announce the error straight away. -->
+        <div class="course-error" id="courses-error" role="alert" hidden>
+          <p class="course-error__message">
+            Sorry, we couldn't load the courses just now. Please check your
+            internet connection and try again.
+          </p>
+          <button type="button" class="button" id="courses-retry">Try again</button>
+        </div>
 
-              <p class="course-card__description">
-                A clear, jargon-free introduction to what AI can and can't do,
-                with practical examples from Irish workplaces.
-              </p>
-
-              <div class="course-card__footer">
-                <p class="course-card__price">€395</p>
-                <a class="button" href="mailto:info@example.ie?subject=Course%20enquiry%3A%20AI%20Fundamentals%20for%20Business">
-                  Book / Enquire<span class="visually-hidden">: AI Fundamentals for Business</span>
-                </a>
-              </div>
-            </article>
-          </li>
-
-          <li>
-            <article class="course-card">
-              <h3 class="course-card__title">Prompt Writing with ChatGPT and Copilot</h3>
-              <dl class="course-card__details">
-                <div>
-                  <dt>Date</dt>
-                  <dd><time datetime="2026-11-19">Thu 19 Nov 2026</time></dd>
-                </div>
-                <div>
-                  <dt>Duration</dt>
-                  <dd>Half day</dd>
-                </div>
-                <div>
-                  <dt>Location</dt>
-                  <dd>Dublin</dd>
-                </div>
-              </dl>
-              <p class="course-card__description">
-                Hands-on practice writing prompts that get reliable, useful
-                results for emails, reports and research.
-              </p>
-              <div class="course-card__footer">
-                <p class="course-card__price">€245</p>
-                <a class="button" href="mailto:info@example.ie?subject=Course%20enquiry%3A%20Prompt%20Writing%20with%20ChatGPT%20and%20Copilot">
-                  Book / Enquire<span class="visually-hidden">: Prompt Writing with ChatGPT and Copilot</span>
-                </a>
-              </div>
-            </article>
-          </li>
-
-          <li>
-            <article class="course-card">
-              <h3 class="course-card__title">AI for Managers: Strategy and Governance</h3>
-              <dl class="course-card__details">
-                <div>
-                  <dt>Date</dt>
-                  <dd><time datetime="2026-12-03">Thu 3 Dec 2026</time></dd>
-                </div>
-                <div>
-                  <dt>Duration</dt>
-                  <dd>2 days</dd>
-                </div>
-                <div>
-                  <dt>Location</dt>
-                  <dd>Cork or online</dd>
-                </div>
-              </dl>
-              <p class="course-card__description">
-                Plan how your team adopts AI responsibly, covering risk, the
-                EU AI Act, data protection and measuring results.
-              </p>
-              <div class="course-card__footer">
-                <p class="course-card__price">€795</p>
-                <a class="button" href="mailto:info@example.ie?subject=Course%20enquiry%3A%20AI%20for%20Managers%3A%20Strategy%20and%20Governance">
-                  Book / Enquire<span class="visually-hidden">: AI for Managers: Strategy and Governance</span>
-                </a>
-              </div>
-            </article>
-          </li>
-
-        </ul>
+        <!-- app.js builds one <li><article class="course-card"> per course
+             inside this list, from the mock data or the live API. -->
+        <ul class="course-list" id="course-list" hidden></ul>
       </div>
     </section>
   </main>

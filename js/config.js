@@ -73,6 +73,7 @@ const CONFIG = {
     background: "#f7f8fa",   // page background
     surface: "#ffffff",      // card and header background
     border: "#dde2e8",       // subtle dividers and card borders
+    error: "#b42318",        // marks the "couldn't load courses" message (6.6:1 on white)
   },
 
   /* -------------------------------------------------------------------
@@ -84,6 +85,10 @@ const CONFIG = {
   useMockData: true,
 
   // Path to the local mock data file (used when useMockData is true).
+  // Keep it in the SAME shape as the real API's response (api.coursesPath
+  // below is applied to both), so switching to the live API just works.
+  // Note: browsers block loading this file if you open index.html by
+  // double-clicking it. Use VS Code's Live Server instead.
   mockDataUrl: "data/sample-courses.json",
 
   api: {
@@ -131,9 +136,9 @@ const CONFIG = {
     id: "id",                   // unique ID (used internally, not shown)
     title: "title",             // course name
     description: "description", // short summary (shown as plain text)
-    date: "startDate",          // start date, ideally ISO format e.g. "2026-11-05"
-    duration: "duration",       // e.g. "2 days" or a number of hours
-    price: "price",             // a number (e.g. 495) or text (e.g. "€495")
+    date: "startDate",          // start date, ideally ISO format e.g. "2026-11-05". Cards are sorted by this.
+    duration: "duration",       // text (e.g. "2 days") shown as-is, or a number of hours (3 → "3 hours")
+    price: "price",             // a number (495 → "€495") or text shown as-is (e.g. "From €650")
     location: "location",       // venue or format, e.g. "Online" / "Dublin"
     bookingUrl: "bookingUrl",   // link to the course's booking page
   },
@@ -154,7 +159,7 @@ const CONFIG = {
   /* -------------------------------------------------------------------
      6. FORMATTING
      How dates and prices are displayed. "en-IE" gives Irish formats,
-     e.g. "5 Nov 2026" and "€495.00".
+     e.g. "Thu 5 Nov 2026", "€495" and "€299.50".
      ------------------------------------------------------------------- */
   format: {
     locale: "en-IE",

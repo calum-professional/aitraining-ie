@@ -34,6 +34,7 @@
   --color-background: #f7f8fa;
   --color-surface: #ffffff;
   --color-border: #dde2e8;
+  --color-error: #b42318;
 
   /* Spacing scale: use these instead of random pixel values so the
      spacing feels consistent. 1rem = the browser's base font size
@@ -108,6 +109,13 @@ a:hover {
 img {
   max-width: 100%;
   height: auto;
+}
+
+/* The `hidden` attribute normally hides an element, but any CSS rule that
+   sets `display` (like `.course-list { display: grid }`) would override it.
+   This rule makes `hidden` always win, so app.js can rely on it. */
+[hidden] {
+  display: none !important;
 }
 
 /* A clear, consistent focus ring for keyboard users. :focus-visible
@@ -313,6 +321,53 @@ main:focus {
   color: var(--color-on-primary);
 }
 
+/* Loading, empty and error messages share this boxed look. */
+.course-status__loading,
+.course-status__empty,
+.course-error {
+  margin: 0;
+  padding: var(--space-5);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+/* Loading: a small spinning ring before the text. It is drawn with a
+   border where one side has a different colour, then rotated. */
+.course-status__loading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-text-muted);
+}
+
+.course-status__loading::before {
+  content: "";
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 800ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error: a coloured bar down the left edge marks it as a problem
+   without shouting. The message text stays the normal text colour. */
+.course-error {
+  border-left: 4px solid var(--color-error);
+}
+
+.course-error__message {
+  margin-bottom: var(--space-4);
+}
+
 
 /* ---------------------------------------------------------------------
    4d. Footer
@@ -390,8 +445,11 @@ main:focus {
 
 /* Respect visitors who ask their device to reduce motion. */
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *,
+  *::before,
+  *::after {
     transition: none !important;
+    animation: none !important; /* the loading spinner stays still */
   }
 }
 

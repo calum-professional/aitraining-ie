@@ -1,0 +1,62 @@
+[
+  {
+    "id": "ai-managers-2026-12",
+    "title": "AI for Managers: Strategy and Governance",
+    "description": "Plan how your team adopts AI responsibly, covering risk, the EU AI Act, data protection and measuring results.",
+    "startDate": "2026-12-03",
+    "duration": "2 days",
+    "price": 795,
+    "location": "Cork or online",
+    "bookingUrl": "https://example.ie/book/ai-for-managers"
+  },
+  {
+    "id": "ai-fundamentals-2026-11",
+    "title": "AI Fundamentals for Business",
+    "description": "A clear, jargon-free introduction to what AI can and can't do, with practical examples from Irish workplaces.",
+    "startDate": "2026-11-05",
+    "duration": "1 day",
+    "price": 395,
+    "location": "Online",
+    "bookingUrl": "https://example.ie/book/ai-fundamentals"
+  },
+  {
+    "id": "prompt-writing-2026-11",
+    "title": "Prompt Writing with ChatGPT and Copilot",
+    "description": "Hands-on practice writing prompts that get reliable, useful results for emails, reports and research.",
+    "startDate": "2026-11-19",
+    "duration": "Half day",
+    "price": 245,
+    "location": "Dublin",
+    "bookingUrl": ""
+  },
+  {
+    "id": "copilot-m365-2027-01",
+    "title": "Microsoft 365 Copilot in Practice",
+    "description": "Use Copilot in Word, Excel, Outlook and Teams to draft, summarise and analyse faster, safely and with confidence.",
+    "startDate": "2027-01-14",
+    "duration": 3,
+    "price": 299.5,
+    "location": "Online",
+    "bookingUrl": "https://example.ie/book/copilot-m365"
+  },
+  {
+    "id": "ai-data-analysis-2027-02",
+    "title": "AI-Assisted Data Analysis",
+    "description": "Turn spreadsheets into insight: cleaning data, spotting trends and building charts with AI tools, no coding required.",
+    "startDate": "2027-02-10",
+    "duration": "2 days",
+    "price": "From €650",
+    "location": "Galway",
+    "bookingUrl": "https://example.ie/book/ai-data-analysis"
+  },
+  {
+    "id": "ai-briefing-2027-03",
+    "title": "Free Briefing: What the EU AI Act Means for You",
+    "description": "A one-hour online session on the key obligations for Irish organisations and what to do next.",
+    "startDate": "2027-03-04",
+    "duration": 1,
+    "price": "",
+    "location": "Online",
+    "bookingUrl": "https://example.ie/book/eu-ai-act-briefing"
+  }
+]
