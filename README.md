@@ -72,7 +72,7 @@ A simple static website listing AI courses from Professional Training, built wit
 
 | Setting | What it controls |
 |---|---|
-| `site` | Site name, tagline, intro, logo, contact details, owner. |
+| `site` | Site name, tagline, intro, logo, contact details (email, a list of phone numbers, address), owner. |
 | `colours` | Every colour on the site. Check contrast if you change them. |
 | `useMockData` | `true` = sample file, `false` = live API. |
 | `api` | API address, where the course list sits in the response, the login key type, and the timeout. |
@@ -80,7 +80,7 @@ A simple static website listing AI courses from Professional Training, built wit
 | `booking` | Button text, and the fallback link for courses without their own booking link. |
 | `format` | Locale and currency (`en-IE`, `EUR`). |
 
-Values marked `TODO` in `config.js` are still placeholders: the email, phone, address, the tagline and intro wording, the API address and the fallback booking link.
+Values marked `TODO` in `config.js` are still placeholders: the tagline and intro wording, the API address and the fallback booking link.
 
 ## Checking the page states
 
