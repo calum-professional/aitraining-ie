@@ -90,6 +90,13 @@ const CONFIG = {
   // The text of each section. `paragraphs` is a list: each item becomes
   // its own paragraph. To hide a whole section, set its heading to "" and
   // its list to []. The text is shown as plain text (no HTML).
+  //
+  // `image` (welcome and about only) is an optional picture shown to the
+  // right of the text on larger screens, and under it on phones.
+  //   src : path to the image, e.g. "assets/my-picture.svg". Use "" for no image.
+  //   alt : a short description for screen readers, e.g. "A trainer
+  //         leading a workshop". If the picture is only decoration and
+  //         adds no information, use "" so screen readers skip it.
   sections: {
     welcome: {
       heading: "Welcome",
@@ -97,6 +104,10 @@ const CONFIG = {
         "Welcome to aitraining.ie. This is placeholder text for the welcome section. It will introduce the site and explain who the courses are for.",
         "A second short paragraph can say what visitors will find on this page and how to get in touch.",
       ],
+      image: {
+        src: "assets/undraw_chat-with-ai_ir62.svg",
+        alt: "", // decorative illustration (unDraw)
+      },
     },
 
     about: {
@@ -105,6 +116,10 @@ const CONFIG = {
         "This is placeholder text for the about section. It will describe Professional Training: who we are, how long we have been running courses, and what makes our training different.",
         "A second paragraph can cover how the courses are delivered, such as online, in person or on-site for teams, and who the trainers are.",
       ],
+      image: {
+        src: "assets/undraw_visionary-technology_f6b3.svg",
+        alt: "", // decorative illustration (unDraw)
+      },
     },
 
     testimonials: {

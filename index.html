@@ -95,18 +95,32 @@
          "section--alt" gives alternate sections a white background, so
          each section is easy to tell apart while scrolling. -->
     <section class="section section--alt" aria-labelledby="welcome-heading" id="welcome">
-      <div class="container">
-        <h2 id="welcome-heading" class="section-title">Welcome</h2>
-        <div class="section-body"></div>
+      <!-- Two columns on larger screens: text on the left, picture on the
+           right (see .section-layout in styles.css). -->
+      <div class="container section-layout">
+        <div class="section-text">
+          <h2 id="welcome-heading" class="section-title">Welcome</h2>
+          <div class="section-body"></div>
+        </div>
+        <!-- app.js adds the picture from CONFIG.sections.welcome.image here,
+             or hides this box if there is no picture. -->
+        <div class="section-media"></div>
       </div>
     </section>
 
     <!-- ============================ ABOUT ============================ -->
     <!-- Filled from CONFIG.sections.about. -->
     <section class="section" aria-labelledby="about-heading" id="about">
-      <div class="container">
-        <h2 id="about-heading" class="section-title">About us</h2>
-        <div class="section-body"></div>
+      <!-- Two columns on larger screens: text on the left, picture on the
+           right (see .section-layout in styles.css). -->
+      <div class="container section-layout">
+        <div class="section-text">
+          <h2 id="about-heading" class="section-title">About us</h2>
+          <div class="section-body"></div>
+        </div>
+        <!-- app.js adds the picture from CONFIG.sections.about.image here,
+             or hides this box if there is no picture. -->
+        <div class="section-media"></div>
       </div>
     </section>
 

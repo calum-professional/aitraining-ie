@@ -73,6 +73,7 @@ A simple static website listing AI courses from Professional Training, built wit
 - The intro has a **View upcoming courses** button that jumps to the courses.
 - All the new text (menu labels, section headings and paragraphs, testimonials) is in `config.js` under `navigation` and `sections`. It's **dummy text for now**, marked `TODO`.
 - To hide a section, empty its text in `config.js`. Its menu link disappears automatically.
+- The Welcome and About sections each have an illustration (from [unDraw](https://undraw.co/), free to use with no credit needed). It sits to the right of the text on desktops and under it on phones and tablets. Change or remove it with `image` in each section in `config.js`.
 
 ---
 
@@ -85,7 +86,7 @@ A simple static website listing AI courses from Professional Training, built wit
 | `js/config.js` | **The only file you edit to change or copy the site.** |
 | `js/app.js` | Loads the courses and builds the page. It contains no site-specific values. |
 | `data/sample-courses.json` | Sample courses for development (used when `useMockData` is `true`). |
-| `assets/` | Logo, images and the favicon files (`favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`). |
+| `assets/` | Logo, images (including the section illustrations) and the favicon files (`favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`). |
 | `CLAUDE.md` | Project rules and conventions. |
 
 ## The main settings in `js/config.js`
@@ -94,7 +95,7 @@ A simple static website listing AI courses from Professional Training, built wit
 |---|---|
 | `site` | Site name, tagline, intro, logo, contact details (email, a list of phone numbers, address), owner. |
 | `navigation` | The menu links: their labels, order, and which section each one jumps to. |
-| `sections` | The text of the Welcome and About sections, and the testimonials. |
+| `sections` | The text and pictures of the Welcome and About sections, and the testimonials. |
 | `colours` | Every colour on the site. Check contrast if you change them. |
 | `useMockData` | `true` = sample file, `false` = live API. |
 | `api` | API address, where the course list sits in the response, the login key type, and the timeout. |

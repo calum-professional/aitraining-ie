@@ -280,6 +280,42 @@ function renderTextSection(sectionId, content) {
 
   const body = section.querySelector(".section-body");
   body.replaceChildren(...paragraphs.map((text) => createElementWithText("p", "", text)));
+
+  renderSectionImage(section, content.image);
+}
+
+
+/**
+ * Adds a section's picture (from CONFIG.sections.<name>.image) to its
+ * .section-media box. With no picture, the box is hidden and the
+ * "section-layout--no-media" class tells styles.css to use one column.
+ */
+function renderSectionImage(section, image) {
+  const media = section.querySelector(".section-media");
+  if (!media) {
+    return; // this section has no space for a picture
+  }
+
+  const hasImage = Boolean(image && image.src);
+  media.hidden = !hasImage;
+  section.querySelector(".section-layout").classList.toggle("section-layout--no-media", !hasImage);
+
+  if (!hasImage) {
+    return;
+  }
+
+  const img = document.createElement("img");
+  img.className = "section-media__image";
+  img.setAttribute("src", image.src);
+  // alt="" is deliberate for decorative pictures: it tells screen readers
+  // to skip the image. (Leaving alt out entirely would make some screen
+  // readers read out the file name instead.)
+  img.setAttribute("alt", image.alt || "");
+  // "lazy" waits to download the picture until the visitor scrolls near
+  // it, so the top of the page loads faster.
+  img.setAttribute("loading", "lazy");
+
+  media.replaceChildren(img);
 }
 
 

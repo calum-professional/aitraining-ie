@@ -343,6 +343,27 @@ main:focus {
   margin-bottom: 0;
 }
 
+/* Text plus a picture (welcome and about). On phones and tablets the
+   picture sits under the text; on desktops they go side by side
+   (see section 6). */
+.section-layout {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.section-media__image {
+  display: block;
+  width: 100%;
+  max-width: 22rem;              /* stops it getting huge on tablets */
+  height: auto;
+  /* Tall pictures are capped so a section doesn't become very long.
+     object-fit: contain shrinks the picture to fit, keeping its shape
+     (without it, the picture would be squashed). */
+  max-height: 22rem;
+  object-fit: contain;
+  margin-inline: auto;           /* centred under the text */
+}
+
 
 /* ---------------------------------------------------------------------
    4d. Testimonials
@@ -747,5 +768,23 @@ main:focus {
   .course-list,
   .testimonial-list {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Text on the left (3 parts of the width), picture on the right
+     (2 parts), centred vertically against each other. minmax(0, ...)
+     stops long words or a wide picture from stretching a column. */
+  .section-layout {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    align-items: center;
+    gap: var(--space-8);
+  }
+
+  /* No picture: the text keeps the full width. */
+  .section-layout--no-media {
+    grid-template-columns: 1fr;
+  }
+
+  .section-media__image {
+    max-width: 100%;
   }
 }
