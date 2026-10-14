@@ -6,9 +6,23 @@
 
   <!-- The title and description are also set from config.js by app.js.
        They are written here too so the page has sensible values even
-       before JavaScript runs. (Phase 5 adds favicon and social tags.) -->
+       before JavaScript runs. (Phase 5 adds social tags.) -->
   <title>aitraining.ie</title>
   <meta name="description" content="">
+
+  <!-- FAVICON: the small icon in the browser tab, bookmarks and phone
+       home screens. These are plain links (not set by app.js) because
+       browsers look for them before any JavaScript runs.
+       To change the icon, replace the three files in /assets and keep
+       the same file names; nothing here needs editing.
+         favicon-32.png       : older browsers that can't use SVG icons
+         favicon.svg          : modern browsers (sharp at any size). Listed
+                                second because browsers that understand
+                                it prefer the later icon.
+         apple-touch-icon.png : iPhone/iPad "Add to Home Screen" (180×180) -->
+  <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 
   <link rel="stylesheet" href="css/styles.css">
 </head>

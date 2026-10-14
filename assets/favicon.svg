@@ -1,0 +1,15 @@
+<!-- Favicon: the small icon shown in browser tabs and bookmarks.
+     A white "AI" on the site's primary blue (CONFIG.colours.primary).
+     The letters are drawn as shapes, not text, so they look the same on
+     every device. To use a different icon, replace this file (and the
+     two PNG files next to it) with your own, keeping the same names. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#0b5394"/>
+  <!-- "A": the outline, with the triangle-shaped hole cut out of it
+       (fill-rule="evenodd" turns the second shape into a hole). -->
+  <path fill="#ffffff" fill-rule="evenodd"
+        d="M10 50 L22 14 H30 L42 50 H34.5 L32 42.5 H20 L17.5 50 Z
+           M21.83 37 H30.17 L26 24.5 Z"/>
+  <!-- "I" -->
+  <rect x="46" y="14" width="8" height="36" fill="#ffffff"/>
+</svg>

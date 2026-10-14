@@ -7,7 +7,7 @@ A simple static website listing AI courses from Professional Training, built wit
 - **What it is:** one web page that shows upcoming AI courses as cards, each with a date, duration, location, price and a "Book / Enquire" button.
 - **How it's built:** plain HTML, CSS and JavaScript. There are no frameworks, no installs and no build step.
 - **Where the settings live:** everything specific to this site (text, contact details, colours, data source) is in **`js/config.js`**. To make a new site, copy the project and edit that one file.
-- **Where it's up to:** Phases 1–3 of 6 are done. The page works with **sample data**. Connecting the real Professional Training API is next.
+- **Where it's up to:** Phases 1–3 of 6 are done and the favicon from Phase 5 is in place. The page works with **sample data**. Connecting the real Professional Training API (Phase 4) is waiting on the API details.
 
 **Quick start:** open the folder in VS Code, right-click `index.html` and choose **Open with Live Server**.
 
@@ -22,8 +22,8 @@ A simple static website listing AI courses from Professional Training, built wit
 | 1 | Project structure and settings file | Done |
 | 2 | Page layout and design (with placeholder cards) | Done |
 | 3 | Load courses from sample data and build the cards | Done |
-| 4 | Connect the real Professional Training API | Next |
-| 5 | Favicon, search-engine and social-sharing tags | To do |
+| 4 | Connect the real Professional Training API | Waiting for API details |
+| 5 | Favicon, search-engine and social-sharing tags | Favicon done |
 | 6 | Full documentation (replicating, deploying, troubleshooting) | To do |
 
 ### Phase 1: Project structure and settings
@@ -54,6 +54,15 @@ A simple static website listing AI courses from Professional Training, built wit
   - **Error:** a friendly message and a **Try again** button
 - Added a `colours.error` setting for the red accent on the error message.
 
+### Phase 5 (part 1): Favicon
+
+- Added a placeholder icon: a white "AI" on the site's blue. It has three files in `assets/`:
+  - `favicon.svg`: used by modern browsers, sharp at any size
+  - `favicon-32.png`: a fallback for older browsers
+  - `apple-touch-icon.png`: 180×180, for iPhone/iPad "Add to Home Screen"
+- Linked them in the `<head>` of `index.html`.
+- **To change the icon:** replace those three files with your own, keeping the same names. If you change `colours.primary` in `config.js`, the icon won't change with it, because it's a separate image.
+
 ---
 
 ## Project files
@@ -65,7 +74,7 @@ A simple static website listing AI courses from Professional Training, built wit
 | `js/config.js` | **The only file you edit to change or copy the site.** |
 | `js/app.js` | Loads the courses and builds the page. It contains no site-specific values. |
 | `data/sample-courses.json` | Sample courses for development (used when `useMockData` is `true`). |
-| `assets/` | Logo, favicon and images. |
+| `assets/` | Logo, images and the favicon files (`favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`). |
 | `CLAUDE.md` | Project rules and conventions. |
 
 ## The main settings in `js/config.js`
