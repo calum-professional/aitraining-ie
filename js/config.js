@@ -173,18 +173,9 @@ const CONFIG = {
      4. DATA SOURCE: mock data or live API
      ------------------------------------------------------------------- */
 
-  // Where the courses come from:
-  //   "auto" = the sample file below when the site is running on your own
-  //            computer (Live Server), and the live API everywhere else.
-  //            This is the usual setting: you can't forget to switch it
-  //            before publishing the site.
-  //   true   = always the sample file (for design work)
-  //   false  = always the live API in `api.url`
-  //
-  // Why not the live API on your computer? The live API is reached
-  // through a small Netlify function (see `api.url` below), and that
-  // function only runs once the site is on Netlify, not in Live Server.
-  useMockData: "auto",
+  // true  = load courses from the local file below (for development/design)
+  // false = load courses from the live API in `api.url`
+  useMockData: true,
 
   // Path to the local mock data file (used when useMockData is true).
   // Keep it in the SAME shape as the real API's response (api.coursesPath
@@ -194,30 +185,14 @@ const CONFIG = {
   mockDataUrl: "data/sample-courses.json",
 
   api: {
-    // The URL that returns the courses.
-    //
-    // The real data comes from Professional Training's API:
-    //   https://www.professional.ie/api/getCourses.php?keywords=AI
-    // But browsers won't let our page read it directly, because that
-    // server doesn't send the "CORS" permission header. So we ask our own
-    // Netlify function (netlify/functions/courses.mjs) instead, which
-    // fetches it for us on the server, where CORS doesn't apply.
-    //
-    // `keywords` picks which courses the API returns. To make a site
-    // about another topic, change it, e.g. "?keywords=Excel".
-    url: "/api/courses?keywords=AI",
+    // The full URL that returns the list of courses.
+    url: "https://api.example.com/v1/courses", // TODO: real endpoint (Phase 4)
 
     // Some APIs wrap the list inside an object, e.g. { "data": [ ...courses ] }.
     // Put the property name(s) that lead to the array here, using dots for
     // nesting, e.g. "data" or "results.items". Use "" if the API
     // returns the array directly.
-    coursesPath: "courses",
-
-    // Where the list of course DATES is, if the API keeps dates in a
-    // separate list from the courses (Professional Training's does).
-    // Each date is matched to its course by ID (see scheduleFieldMap
-    // below). Use "" if the dates are on the courses themselves.
-    schedulePath: "schedule",
+    coursesPath: "",
 
     // Authentication: how the API checks who is asking.
     //   type: "none"   : no key needed
@@ -251,41 +226,14 @@ const CONFIG = {
      the card will simply leave it out.
      ------------------------------------------------------------------- */
   fieldMap: {
-    id: "id",                   // unique ID (used to match dates and build course links; not shown)
-    title: "name",              // course name
-    description: "descrip",     // summary (shown as plain text, shortened, see courseList below)
-    date: "",                   // start date ON the course, ideally ISO e.g. "2026-11-05". "" here: dates come from the schedule.
-    duration: "",               // text (e.g. "2 days") shown as-is, or a number of hours (3 → "3 hours"). The API has none.
-    price: "",                  // a number (495 → "€495") or text shown as-is (e.g. "From €650"). The API has none.
-    location: "",               // venue or format, e.g. "Online". "" here: locations come from the schedule.
-    bookingUrl: "",             // the course's own booking link. The API has none, so booking.courseUrl is used.
-    hidden: "obsolete",         // courses where this field is true are left out (e.g. retired courses)
-  },
-
-  // The fields of each entry in the separate list of dates (api.schedulePath).
-  // Ignored when schedulePath is "".
-  scheduleFieldMap: {
-    courseId: "course_id",      // the ID of the course this date belongs to (matches fieldMap.id)
-    date: "date",               // the date, ideally ISO format e.g. "2026-11-05"
-    location: "location",       // where that date runs, e.g. "Online" / "Cork"
-  },
-
-  /* -------------------------------------------------------------------
-     5b. COURSE LIST
-     How the course cards are shown.
-     ------------------------------------------------------------------- */
-  courseList: {
-    // Dates before today are always left out. A card lists at most this
-    // many upcoming dates, then says e.g. "+ 2 more dates".
-    maxDatesShown: 3,
-
-    // Shown instead of dates when a course has no upcoming dates.
-    noDatesText: "Dates on request",
-
-    // Long descriptions are cut to about this many characters (at the end
-    // of a word) and finished with "…". The full text is on the course
-    // page. Use 0 to always show the full description.
-    descriptionMaxLength: 220,
+    id: "id",                   // unique ID (used internally, not shown)
+    title: "title",             // course name
+    description: "description", // short summary (shown as plain text)
+    date: "startDate",          // start date, ideally ISO format e.g. "2026-11-05". Cards are sorted by this.
+    duration: "duration",       // text (e.g. "2 days") shown as-is, or a number of hours (3 → "3 hours")
+    price: "price",             // a number (495 → "€495") or text shown as-is (e.g. "From €650")
+    location: "location",       // venue or format, e.g. "Online" / "Dublin"
+    bookingUrl: "bookingUrl",   // link to the course's booking page
   },
 
   /* -------------------------------------------------------------------
@@ -295,23 +243,10 @@ const CONFIG = {
     // Text on each card's button.
     buttonLabel: "Book / Enquire",
 
-    // Where the button goes, in order of preference:
-    //   1. the course's own booking link (fieldMap.bookingUrl), if it has one
-    //   2. courseUrl below, if it's set
-    //   3. fallbackUrl below
-    //
-    // In courseUrl and fallbackUrl these placeholders are filled in:
-    //   {id}    : the course ID, e.g. 105090
-    //   {slug}  : the title in professional.ie's link style: colons are
-    //             dropped, spaces and hyphens become "_", e.g.
-    //             "Python programming - Introduction" → "Python_programming___Introduction"
-    //   {title} : the title, encoded for use in a link (good for email subjects)
-
-    // The course's page on professional.ie. Use "" to skip straight to fallbackUrl.
-    courseUrl: "https://www.professional.ie/business_training_courses_ireland/{slug}-{id}.htm",
-
-    // Used when neither of the above gives a link. Can be a web page or a mailto: link.
-    fallbackUrl: "mailto:info@professional.ie?subject=Course%20enquiry%3A%20{title}",
+    // Used when a course has NO booking link of its own in the API data.
+    // {title} is replaced with the course title (URL-encoded).
+    // Can be a web page or a mailto: link.
+    fallbackUrl: "mailto:info@example.ie?subject=Course%20enquiry%3A%20{title}", // TODO: real email or URL
   },
 
   /* -------------------------------------------------------------------

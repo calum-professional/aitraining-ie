@@ -1,188 +1,62 @@
-{
-  "found": true,
-  "location": "",
-  "keyword": "AI",
-  "title": "AI",
-  "courses": [
-    {
-      "name": "Prompt Engineering Essentials - using AI effectively",
-      "descrip": "This course provides an introduction to AI Technologies available and gives practical examples of how these tools and techniques can be used in real-world situations today.  \nThe skills gained will open up programming as a tool for non-programmers.   AI assistants like ChatGPT and CoPilot are able to write code, so if you can clearly describe what you require and are able to interpret the results you can now utilise programming as a tool.   \n\nParticipants will gain knowledge of the new skill of \"prompt-engineering\" which is learning how to phrase your interactions with AI tools.  \n\nThe course will primarily focus on using ChatGPT but the techniques can be adapted to other AI assistants like Copilot and many others.  ",
-      "id": 105090,
-      "type": 1,
-      "group": "Programming using AI",
-      "obsolete": false
-    },
-    {
-      "name": "AI in Excel using ChatGPT and Copilot",
-      "descrip": "The potential opportunities offered by AI are enormous, but how do you apply them to reap their benefits in Microsoft Excel?    This course will help to unveil the power of artificial intelligence, exploring key concepts, applications, and cutting-edge tools like ChatGPT and Copilot.  Participants will gain practical skills in using AI and learn Prompt Engineering techniques to carry out intermediate and advanced tasks in Excel.",
-      "id": 105088,
-      "type": 1,
-      "group": "AI in Microsoft 365",
-      "obsolete": false
-    },
-    {
-      "name": "Python programming - Introduction",
-      "descrip": "This three day course is a practical introduction to Python 3.  Participants will gain a clear grasp of the fundamentals of python programming and how to use that knowledge to automate tasks and derive insights from data.  Using these fundamentals, participants will also be guided on how to use an AI Assistant to improve efficiency when writing code and to add AI features to a Python application.\n\n",
-      "id": 4359,
-      "type": 1,
-      "group": "Python Development",
-      "obsolete": false
-    },
-    {
-      "name": "Make your Data AI-Ready",
-      "descrip": "A lack of usable data is to blame for the limited use of AI in many organisations, research suggests. Siloed systems and poor data quality remain the top barriers to the promises of AI-driven efficiencies.  This one-day course shows how to use AI to fix messy data and simplify recurring reports.  Participants learn how to use modern tools powered by artificial intelligence (AI) to bring together, clean, prepare and use data from many sources — without doing everything manually. It helps automate tasks such as preparing and producing regular period reports, so you can spend more time analysing results and less time organising the data. \nThrough hands-on exercises and real-world case studies, you’ll master AI-assisted data workflows—making your data preparation faster, smarter, and more efficient.",
-      "id": 105127,
-      "type": 1,
-      "group": "AI for Data Integration and Automation",
-      "obsolete": false
-    },
-    {
-      "name": "AI In The Workplace",
-      "descrip": "Artificial Intelligence is no longer a future concept - it’s already here, transforming how we work every day. This course will give a clear, practical understanding of what AI is, how it fits into the modern workplace and how you can use it to work smarter, not harder.\n\nThrough hands-on activities and real-world examples, you’ll learn to use popular AI tools to save time, boost creativity, improve decision-making and streamline daily tasks. Along the way, we’ll also explore the responsibilities that come with AI - including ethics, safety and privacy - so you can apply it confidently and responsibly in your role.\n\nBy the end of the course, you’ll have both the skills and the mindset to collaborate effectively with AI and make it a valuable partner in your work.\n\n",
-      "id": 105139,
-      "type": 1,
-      "group": "AI in Microsoft 365",
-      "obsolete": false
-    },
-    {
-      "name": "Artificial Intelligence Fundamentals with Python - PCEI",
-      "descrip": "This five day instructor-led course introduces the essential concepts, terminology and practical reasoning skills required to understand and apply Artificial Intelligence using Python. Participants explore how AI systems learn from data, the main types of machine learning, introductory neural networks, natural language processing, computer vision and generative AI. The course also addresses prompt engineering, responsible AI, data privacy, model limitations and the critical evaluation of AI-generated results. Examination preparation and mock-exam activities are available separately as an optional one-day workshop.",
-      "id": 105162,
-      "type": 1,
-      "group": "Python Development",
-      "obsolete": false
-    },
-    {
-      "name": "Vibe Coding - Programming for non-programmers",
-      "descrip": "Vibe Coding – Programming for Non-Programmers is a hands-on, AI-assisted course designed to make coding accessible to everyone. Using tools like ChatGPT and CoPilot, you'll learn to communicate with AI for coding tasks, automate processes in Excel and set up simple programming environments—all without prior coding experience. Perfect for professionals looking to enhance their digital skills, this course empowers you to leverage AI for smarter, more efficient problem-solving.\n\nThis course will use Excel, VBA and Python but it can be customised to use any other programming language as required. \n",
-      "id": 105094,
-      "type": 1,
-      "group": "Programming using AI",
-      "obsolete": false
-    },
-    {
-      "name": "Failure modes and effects analysis (FMEA) course",
-      "descrip": "This course focuses on ensuring participants are clear about all of the columns in the provided FMEA Excel file, understand the difference between a Product &amp; Process FMEA and have completed an FMEA with the required supporting tools.",
-      "id": 4840,
-      "type": 2,
-      "group": "",
-      "obsolete": false
-    },
-    {
-      "name": "PMP Exam Preparation",
-      "descrip": "Studies indicate that only one-quarter of all projects world-wide succeed in achieving quality, cost and schedule objectives. With the ever increasing pressure to manage costs and an equally aggressive market space for quality products delivered to scheduled dates; the need for certified project managers is increasing. The Project Management Professional (PMP&reg;) certification is the most widely recognised certification available to Project Managers worldwide.",
-      "id": 4122,
-      "type": 2,
-      "group": "PMP &amp; PMI - Project Management Professional",
-      "obsolete": false
-    },
-    {
-      "name": "QQI Level 6 Train the Trainer Certification in Training Delivery &amp; Evaluation (6N3326)",
-      "descrip": "Successful participation on this practical, relevant and exciting training programme will empower you with the knowledge, practical skills and competencies necessary to Design, Deliver, Assess and Evaluate training courses.\n\nEssential Skills you will learn on this programme include: Public speaking with confidence; Communicating with energy, clarity and focus; Presentation / Training Programme Design and Preparation; Document / Report Writing; Effective use of PowerPoint; Facilitating Team Meetings; Assessment techniques; Evaluate and give Constructive Feedback.",
-      "id": 4300,
-      "type": 2,
-      "group": "Train the Trainer courses",
-      "obsolete": true
-    }
-  ],
-  "schedule": [
-    {
-      "name": "Prompt Engineering Essentials - using AI effectively",
-      "course_id": 105090,
-      "date": "2027-02-22",
-      "id": 861,
-      "location": "Online"
-    },
-    {
-      "name": "Prompt Engineering Essentials - using AI effectively",
-      "course_id": 105090,
-      "date": "2027-05-17",
-      "id": 867,
-      "location": "Online"
-    },
-    {
-      "name": "AI in Excel using ChatGPT and Copilot",
-      "course_id": 105088,
-      "date": "2027-01-15",
-      "id": 1136,
-      "location": "Online"
-    },
-    {
-      "name": "AI in Excel using ChatGPT and Copilot",
-      "course_id": 105088,
-      "date": "2027-01-29",
-      "id": 1137,
-      "location": "Online"
-    },
-    {
-      "name": "AI in Excel using ChatGPT and Copilot",
-      "course_id": 105088,
-      "date": "2027-02-12",
-      "id": 1226,
-      "location": "Online"
-    },
-    {
-      "name": "AI in Excel using ChatGPT and Copilot",
-      "course_id": 105088,
-      "date": "2027-03-05",
-      "id": 1266,
-      "location": "Online"
-    },
-    {
-      "name": "AI in Excel using ChatGPT and Copilot",
-      "course_id": 105088,
-      "date": "2027-04-09",
-      "id": 1273,
-      "location": "Online"
-    },
-    {
-      "name": "Python programming - Introduction",
-      "course_id": 4359,
-      "date": "2026-04-12",
-      "id": 795,
-      "location": "Online"
-    },
-    {
-      "name": "Python programming - Introduction",
-      "course_id": 4359,
-      "date": "2027-01-25",
-      "id": 1289,
-      "location": "Online"
-    },
-    {
-      "name": "Make your Data AI-Ready",
-      "course_id": 105127,
-      "date": "2026-07-08",
-      "id": 1147,
-      "location": "Online"
-    },
-    {
-      "name": "Make your Data AI-Ready",
-      "course_id": 105127,
-      "date": "2026-10-06",
-      "id": 1146,
-      "location": "Online"
-    },
-    {
-      "name": "AI In The Workplace",
-      "course_id": 105139,
-      "date": "2027-03-10",
-      "id": 1224,
-      "location": "Online"
-    },
-    {
-      "name": "Artificial Intelligence Fundamentals with Python - PCEI",
-      "course_id": 105162,
-      "date": "2027-01-25",
-      "id": 1293,
-      "location": "Online"
-    },
-    {
-      "name": "Vibe Coding - Programming for non-programmers",
-      "course_id": null,
-      "date": null,
-      "id": null,
-      "location": null
-    }
-  ]
-}
+[
+  {
+    "id": "ai-managers-2026-12",
+    "title": "AI for Managers: Strategy and Governance",
+    "description": "Plan how your team adopts AI responsibly, covering risk, the EU AI Act, data protection and measuring results.",
+    "startDate": "2026-12-03",
+    "duration": "2 days",
+    "price": 795,
+    "location": "Cork or online",
+    "bookingUrl": "https://example.ie/book/ai-for-managers"
+  },
+  {
+    "id": "ai-fundamentals-2026-11",
+    "title": "AI Fundamentals for Business",
+    "description": "A clear, jargon-free introduction to what AI can and can't do, with practical examples from Irish workplaces.",
+    "startDate": "2026-11-05",
+    "duration": "1 day",
+    "price": 395,
+    "location": "Online",
+    "bookingUrl": "https://example.ie/book/ai-fundamentals"
+  },
+  {
+    "id": "prompt-writing-2026-11",
+    "title": "Prompt Writing with ChatGPT and Copilot",
+    "description": "Hands-on practice writing prompts that get reliable, useful results for emails, reports and research.",
+    "startDate": "2026-11-19",
+    "duration": "Half day",
+    "price": 245,
+    "location": "Dublin",
+    "bookingUrl": ""
+  },
+  {
+    "id": "copilot-m365-2027-01",
+    "title": "Microsoft 365 Copilot in Practice",
+    "description": "Use Copilot in Word, Excel, Outlook and Teams to draft, summarise and analyse faster, safely and with confidence.",
+    "startDate": "2027-01-14",
+    "duration": 3,
+    "price": 299.5,
+    "location": "Online",
+    "bookingUrl": "https://example.ie/book/copilot-m365"
+  },
+  {
+    "id": "ai-data-analysis-2027-02",
+    "title": "AI-Assisted Data Analysis",
+    "description": "Turn spreadsheets into insight: cleaning data, spotting trends and building charts with AI tools, no coding required.",
+    "startDate": "2027-02-10",
+    "duration": "2 days",
+    "price": "From €650",
+    "location": "Galway",
+    "bookingUrl": "https://example.ie/book/ai-data-analysis"
+  },
+  {
+    "id": "ai-briefing-2027-03",
+    "title": "Free Briefing: What the EU AI Act Means for You",
+    "description": "A one-hour online session on the key obligations for Irish organisations and what to do next.",
+    "startDate": "2027-03-04",
+    "duration": 1,
+    "price": "",
+    "location": "Online",
+    "bookingUrl": "https://example.ie/book/eu-ai-act-briefing"
+  }
+]
