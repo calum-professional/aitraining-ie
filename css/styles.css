@@ -487,6 +487,19 @@ main:focus {
   font-weight: 600;
 }
 
+/* A course's upcoming dates: one per line, without bullet points. */
+.course-card__dates {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* "+ 2 more dates": quieter than the dates themselves. */
+.course-card__more-dates {
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
 .course-card__description {
   color: var(--color-text);
   margin-bottom: var(--space-5);

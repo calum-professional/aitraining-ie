@@ -548,7 +548,7 @@ async function loadCourses() {
       return;
     }
 
-    renderCourses(sortByDate(courses));
+    renderCourses(sortByNextDate(courses));
     showCoursesState("loaded");
   } catch (error) {
     // The visitor sees a friendly message. The technical detail goes to
@@ -602,7 +602,8 @@ function setUpRetryButton() {
    --------------------------------------------------------------------- */
 
 /**
- * Downloads the course list and returns it as an array.
+ * Downloads the courses and returns them as a list, tidied up and ready
+ * for the cards (see prepareCourses() below).
  * Throws an error if the request fails, times out or returns something
  * that isn't a list, so loadCourses() can show the error state.
  */
@@ -632,9 +633,27 @@ async function fetchCourses() {
 
   const data = await response.json();
 
-  // The mock file should have the same shape as the real API's response,
-  // so coursesPath is applied to both.
+  // The mock file has the same shape as the real API's response, so the
+  // same paths (CONFIG.api.coursesPath and schedulePath) work for both.
+  return prepareCourses(readCourseList(data), readSchedule(data));
+}
+
+
+/**
+ * Finds the list of courses inside the downloaded data, using
+ * CONFIG.api.coursesPath.
+ */
+function readCourseList(data) {
   const courses = getValueAtPath(data, CONFIG.api.coursesPath);
+
+  // Some APIs leave the list out completely when nothing matches, rather
+  // than sending an empty list. (Professional Training's API does this
+  // for a keyword with no courses.) Treat that as "no courses", but leave
+  // a hint in the console in case the real cause is a wrong coursesPath.
+  if (courses == null) {
+    console.warn(`No "${CONFIG.api.coursesPath}" in the data, so showing no courses. If there should be courses, check CONFIG.api.coursesPath in config.js.`);
+    return [];
+  }
 
   if (!Array.isArray(courses)) {
     throw new Error(
@@ -648,11 +667,43 @@ async function fetchCourses() {
 
 
 /**
+ * Finds the separate list of course dates (CONFIG.api.schedulePath), if
+ * the API has one. Returns an empty list if not, so the courses still
+ * show, just without dates.
+ */
+function readSchedule(data) {
+  if (!CONFIG.api.schedulePath) {
+    return [];
+  }
+
+  const schedule = getValueAtPath(data, CONFIG.api.schedulePath);
+  return Array.isArray(schedule) ? schedule : [];
+}
+
+
+/**
+ * Decides whether to load the sample file or the live API, following
+ * CONFIG.useMockData: true, false or "auto".
+ */
+function isUsingMockData() {
+  if (CONFIG.useMockData !== "auto") {
+    return CONFIG.useMockData === true;
+  }
+
+  // "auto": use the sample file when the page is on this computer.
+  // Live Server's addresses look like http://127.0.0.1:5500, and
+  // "localhost" and "[::1]" are other names for this computer.
+  const localNames = ["localhost", "127.0.0.1", "[::1]", ""];
+  return localNames.includes(window.location.hostname);
+}
+
+
+/**
  * Works out the URL and headers for the request, based on
  * CONFIG.useMockData and CONFIG.api.auth.
  */
 function buildRequest() {
-  if (CONFIG.useMockData) {
+  if (isUsingMockData()) {
     return { url: CONFIG.mockDataUrl, headers: {} };
   }
 
@@ -693,38 +744,285 @@ function getValueAtPath(object, path) {
 
 
 /**
- * Reads one field of a course, using the API field name from
- * CONFIG.fieldMap. `name` is our own name for the field, e.g. "title".
- * Returns "" when the field is not mapped (or is set to "") or has no
- * value, so the code that calls it can simply check `if (value)`.
+ * Reads one value from an API record using a field name from config.js.
+ * Returns "" when the field name is "" or the value is missing, so the
+ * code that calls it can simply check `if (value)`.
  */
-function getField(course, name) {
-  const path = CONFIG.fieldMap[name];
+function readField(record, path) {
   if (!path) {
-    return ""; // without this, an empty path would return the whole course
+    return ""; // without this, an empty path would return the whole record
   }
 
-  const value = getValueAtPath(course, path);
+  const value = getValueAtPath(record, path);
   return value == null ? "" : value;
 }
 
 
 /**
- * Returns a copy of the courses sorted by start date, soonest first.
- * Courses without a valid date go to the end.
+ * Reads one field of a course, using the API field name from
+ * CONFIG.fieldMap. `name` is our own name for the field, e.g. "title".
  */
-function sortByDate(courses) {
-  const timeOf = (course) => {
-    const date = parseDate(getField(course, "date"));
-    return date ? date.getTime() : Infinity;
+function getField(course, name) {
+  return readField(course, CONFIG.fieldMap[name]);
+}
+
+
+/* ---------------------------------------------------------------------
+   Preparing the data
+   APIs rarely send data exactly the way a page wants to show it. So
+   before building any cards, we turn each course into a tidy object of
+   our own, with the same shape whatever the API looks like:
+     { id, title, description, dates, location, duration, price, bookingUrl }
+   The card-building code further down only ever sees this tidy shape.
+   --------------------------------------------------------------------- */
+
+/**
+ * Leaves out hidden courses (e.g. retired ones) and tidies up the rest.
+ */
+function prepareCourses(rawCourses, schedule) {
+  const datesByCourse = groupDatesByCourse(schedule);
+
+  return rawCourses
+    .filter((course) => !isHiddenCourse(course))
+    .map((course) => prepareCourse(course, datesByCourse));
+}
+
+
+/**
+ * True if the course's "hidden" field (CONFIG.fieldMap.hidden, e.g.
+ * "obsolete") is switched on. APIs write "on" in different ways, so
+ * true, 1, "1" and "true" all count.
+ */
+function isHiddenCourse(course) {
+  const value = getField(course, "hidden");
+  return value === true || value === 1 || value === "1" || value === "true";
+}
+
+
+/**
+ * Sorts the separate list of dates into groups, one per course, so each
+ * course can quickly find its own dates. A Map works like a labelled set
+ * of drawers: the label is the course ID and each drawer holds that
+ * course's dates.
+ */
+function groupDatesByCourse(schedule) {
+  const fields = CONFIG.scheduleFieldMap;
+  const datesByCourse = new Map();
+
+  for (const entry of schedule) {
+    const courseId = readField(entry, fields.courseId);
+    if (courseId === "") {
+      continue; // an entry that isn't linked to any course
+    }
+
+    // String() so that an ID sent as 105090 in one list and "105090" in
+    // the other still match.
+    const key = String(courseId);
+    if (!datesByCourse.has(key)) {
+      datesByCourse.set(key, []);
+    }
+
+    datesByCourse.get(key).push({
+      date: readField(entry, fields.date),
+      location: cleanText(readField(entry, fields.location)),
+    });
+  }
+
+  return datesByCourse;
+}
+
+
+/**
+ * Turns one course from the API into our tidy shape (see above).
+ */
+function prepareCourse(course, datesByCourse) {
+  const id = getField(course, "id");
+  const title = cleanText(getField(course, "title")) || "Untitled course";
+
+  // The course's dates from the separate schedule list, plus its own
+  // date field if the API has one.
+  const dates = [...(datesByCourse.get(String(id)) || [])];
+  const ownDate = getField(course, "date");
+  if (ownDate) {
+    dates.push({ date: ownDate, location: "" });
+  }
+
+  const upcoming = getUpcomingDates(dates);
+  const description = cleanText(getField(course, "description"));
+
+  return {
+    id,
+    title,
+    description: shortenText(description, CONFIG.courseList.descriptionMaxLength),
+    dates: upcoming,
+    location: cleanText(getField(course, "location")) || listLocations(upcoming),
+    duration: formatDuration(getField(course, "duration")),
+    price: formatPrice(getField(course, "price")),
+    bookingUrl: chooseBookingUrl(course, id, title),
   };
+}
+
+
+/**
+ * Keeps only dates from today onwards, sorted soonest first.
+ * Each date also gets `parsed`: a real Date object (or null if the text
+ * couldn't be understood, e.g. "TBC"; those are kept and go last).
+ */
+function getUpcomingDates(dates) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // midnight at the start of today
+
+  return dates
+    .filter((entry) => entry.date !== "")
+    .map((entry) => ({ ...entry, parsed: parseDate(entry.date) }))
+    .filter((entry) => !entry.parsed || entry.parsed >= today)
+    .sort((a, b) => timeOrInfinity(a.parsed) - timeOrInfinity(b.parsed));
+}
+
+
+/**
+ * A date's time as a number for sorting, or Infinity (sorts last) for
+ * a missing date.
+ */
+function timeOrInfinity(date) {
+  return date ? date.getTime() : Infinity;
+}
+
+
+/**
+ * Lists the different locations of a course's dates, e.g. "Online" or
+ * "Cork, Online". A Set ignores repeats, so "Online" appears only once.
+ */
+function listLocations(dates) {
+  const locations = new Set(dates.map((entry) => entry.location).filter(Boolean));
+  return [...locations].join(", ");
+}
+
+
+/**
+ * Returns a copy of the courses sorted by their next date, soonest
+ * first. Courses with no upcoming dates go to the end, in the order the
+ * API sent them.
+ */
+function sortByNextDate(courses) {
+  const nextTime = (course) => timeOrInfinity(course.dates.length > 0 ? course.dates[0].parsed : null);
 
   // [...courses] makes a copy, so the original array is not changed.
   return [...courses].sort((a, b) => {
-    const difference = timeOf(a) - timeOf(b);
+    const difference = nextTime(a) - nextTime(b);
     // Infinity - Infinity is NaN, so two undated courses count as equal.
     return Number.isNaN(difference) ? 0 : difference;
   });
+}
+
+
+/**
+ * Turns text from the API into clean plain text.
+ *
+ * Some APIs send text containing HTML codes, e.g. "Product &amp; Process"
+ * (meaning "Product & Process") or tags like "<strong>". Shown with
+ * textContent, those would appear literally as "&amp;". So we let the
+ * browser decode them:
+ *
+ * SECURITY: DOMParser builds a separate, "inert" document that is never
+ * shown. Scripts in it never run and its images never load. We only read
+ * back its plain text (textContent), which the cards then insert with
+ * textContent too. So this is safe, unlike putting the text into
+ * innerHTML on the real page.
+ */
+function cleanText(value) {
+  // Squash line breaks and runs of spaces into single spaces.
+  return decodeHtml(value).replace(/\s+/g, " ").trim();
+}
+
+
+/**
+ * The decoding half of cleanText(): HTML codes and tags become plain
+ * text, but spacing is left exactly as it was.
+ */
+function decodeHtml(value) {
+  if (value === "" || value == null) {
+    return "";
+  }
+
+  const text = String(value);
+
+  // Only decode if there's something to decode ("<" or "&").
+  if (!/[<&]/.test(text)) {
+    return text;
+  }
+
+  return new DOMParser().parseFromString(text, "text/html").body.textContent;
+}
+
+
+/**
+ * Shortens text to about `maxLength` characters, ending at a whole word
+ * with "…". A maxLength of 0 means "don't shorten".
+ */
+function shortenText(text, maxLength) {
+  if (!maxLength || text.length <= maxLength) {
+    return text;
+  }
+
+  const cut = text.slice(0, maxLength);
+  const lastSpace = cut.lastIndexOf(" ");
+  const wholeWords = lastSpace > 0 ? cut.slice(0, lastSpace) : cut;
+
+  // Drop any trailing comma or full stop, so we don't get ",…".
+  return wholeWords.replace(/[\s,.;:!?-]+$/, "") + "…";
+}
+
+
+/**
+ * Picks the link for a course's button (see CONFIG.booking):
+ * its own booking link, then the course page, then the fallback.
+ * Only safe links are used (see getSafeUrl()).
+ */
+function chooseBookingUrl(course, id, title) {
+  const ownLink = getSafeUrl(getField(course, "bookingUrl"));
+  if (ownLink) {
+    return ownLink;
+  }
+
+  const { courseUrl, fallbackUrl } = CONFIG.booking;
+
+  // The slug is made from the title exactly as the API sent it, even
+  // double or trailing spaces, because professional.ie's links keep them.
+  const values = { id, title, slug: makeSlug(decodeHtml(getField(course, "title"))) };
+
+  if (courseUrl && id !== "") {
+    const pageLink = getSafeUrl(fillLinkTemplate(courseUrl, values));
+    if (pageLink) {
+      return pageLink;
+    }
+  }
+
+  return getSafeUrl(fillLinkTemplate(fallbackUrl || "", values));
+}
+
+
+/**
+ * Fills in {id}, {slug} and {title} in a link from config.js.
+ * encodeURIComponent() makes each value safe to put inside a link: it
+ * turns spaces into %20, "&" into %26 and so on.
+ */
+function fillLinkTemplate(template, values) {
+  return template
+    .replaceAll("{id}", encodeURIComponent(values.id))
+    .replaceAll("{slug}", encodeURIComponent(values.slug))
+    .replaceAll("{title}", encodeURIComponent(values.title));
+}
+
+
+/**
+ * Turns a title into the style professional.ie uses in its course links:
+ * colons are dropped, then every space and hyphen becomes an underscore.
+ *   "Inside Sales Skills: Script development" → "Inside_Sales_Skills_Script_development"
+ *   "Python programming - Introduction"      → "Python_programming___Introduction"
+ */
+function makeSlug(title) {
+  return title.replace(/:/g, "").replace(/[ -]/g, "_");
 }
 
 
@@ -757,53 +1055,81 @@ function renderCourses(courses) {
  * API sent "<script>", it would just appear as those characters.
  */
 function createCourseCard(course) {
-  const title = String(getField(course, "title")) || "Untitled course";
-
   const card = document.createElement("article");
   card.className = "course-card";
-  card.append(createElementWithText("h3", "course-card__title", title));
+  card.append(createElementWithText("h3", "course-card__title", course.title));
 
-  // Date, duration and location: only include the ones that have a value.
+  // Dates, duration and location: only include the ones that have a value.
   const details = document.createElement("dl");
   details.className = "course-card__details";
 
-  const date = getField(course, "date");
-  if (date) {
-    details.append(createDetailRow("Date", createDateElement(date)));
+  const dates = createDatesValue(course.dates);
+  if (dates) {
+    details.append(createDetailRow(course.dates.length === 1 ? "Date" : "Dates", dates));
   }
 
-  const duration = formatDuration(getField(course, "duration"));
-  if (duration) {
-    details.append(createDetailRow("Duration", duration));
+  if (course.duration) {
+    details.append(createDetailRow("Duration", course.duration));
   }
 
-  const location = String(getField(course, "location"));
-  if (location) {
-    details.append(createDetailRow("Location", location));
+  if (course.location) {
+    details.append(createDetailRow("Location", course.location));
   }
 
   if (details.children.length > 0) {
     card.append(details);
   }
 
-  const description = String(getField(course, "description"));
-  if (description) {
-    card.append(createElementWithText("p", "course-card__description", description));
+  if (course.description) {
+    card.append(createElementWithText("p", "course-card__description", course.description));
   }
 
   // Footer: the price (if there is one) and the booking button.
   const footer = document.createElement("div");
   footer.className = "course-card__footer";
 
-  const price = formatPrice(getField(course, "price"));
-  if (price) {
-    footer.append(createElementWithText("p", "course-card__price", price));
+  if (course.price) {
+    footer.append(createElementWithText("p", "course-card__price", course.price));
   }
 
-  footer.append(createBookingButton(course, title));
+  footer.append(createBookingButton(course));
   card.append(footer);
 
   return card;
+}
+
+
+/**
+ * Builds what goes next to "Dates" on a card: a short list of upcoming
+ * dates, with "+ 2 more dates" if there are more than
+ * CONFIG.courseList.maxDatesShown. With no dates it returns the
+ * noDatesText (e.g. "Dates on request"), or "" to leave the row out.
+ */
+function createDatesValue(dates) {
+  const { maxDatesShown, noDatesText } = CONFIG.courseList;
+
+  if (dates.length === 0) {
+    return noDatesText || "";
+  }
+
+  const shown = maxDatesShown > 0 ? dates.slice(0, maxDatesShown) : dates;
+
+  const list = document.createElement("ul");
+  list.className = "course-card__dates";
+
+  for (const entry of shown) {
+    const item = document.createElement("li");
+    item.append(createDateElement(entry.date, entry.parsed));
+    list.append(item);
+  }
+
+  const hiddenCount = dates.length - shown.length;
+  if (hiddenCount > 0) {
+    const moreText = `+ ${hiddenCount} more ${hiddenCount === 1 ? "date" : "dates"}`;
+    list.append(createElementWithText("li", "course-card__more-dates", moreText));
+  }
+
+  return list;
 }
 
 
@@ -838,25 +1164,22 @@ function createDetailRow(label, value) {
 
 
 /**
- * Creates the "Book / Enquire" link. Uses the course's own booking URL
- * if it is safe, otherwise the fallback from CONFIG.booking.
+ * Creates the "Book / Enquire" link. The link itself was chosen
+ * earlier, by chooseBookingUrl().
  */
-function createBookingButton(course, title) {
-  const fallback = CONFIG.booking.fallbackUrl.replace("{title}", encodeURIComponent(title));
-  const href = getSafeUrl(getField(course, "bookingUrl")) || getSafeUrl(fallback);
-
+function createBookingButton(course) {
   const link = document.createElement("a");
   link.className = "button";
   link.textContent = CONFIG.booking.buttonLabel;
 
-  if (href) {
-    link.setAttribute("href", href);
+  if (course.bookingUrl) {
+    link.setAttribute("href", course.bookingUrl);
   }
 
   // Every card has the same button text, which is confusing for screen
   // reader users who list all the links on a page. This hidden text makes
   // each one unique, e.g. "Book / Enquire: AI Fundamentals for Business".
-  link.append(createElementWithText("span", "visually-hidden", ": " + title));
+  link.append(createElementWithText("span", "visually-hidden", ": " + course.title));
 
   return link;
 }
@@ -911,11 +1234,10 @@ function parseDate(value) {
 /**
  * Creates a <time> element showing a friendly date, with the original
  * value in its datetime attribute for browsers and search engines.
- * If the date can't be understood, the original text is shown as-is.
+ * `date` is the value already turned into a Date by parseDate(); if the
+ * value couldn't be understood, the original text is shown as-is.
  */
-function createDateElement(value) {
-  const date = parseDate(value);
-
+function createDateElement(value, date) {
   if (!date) {
     return String(value);
   }
